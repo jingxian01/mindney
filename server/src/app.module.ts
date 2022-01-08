@@ -9,6 +9,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { GraphQLModule } from "@nestjs/graphql";
 import { join } from "path";
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
+import { AuthModule } from "./auth/auth.module";
+import { GraphQLError, GraphQLFormattedError } from "graphql";
 
 @Module({
   imports: [
@@ -21,6 +23,15 @@ import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
       sortSchema: true,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      formatError: (error: GraphQLError) => {
+        const graphQLFormattedError: GraphQLFormattedError = error?.extensions
+          ?.response?.message
+          ? {
+              message: error?.extensions?.response?.message || error.message,
+            }
+          : error;
+        return graphQLFormattedError;
+      },
     }),
     TypeOrmModule.forRoot({
       type: "postgres",
@@ -36,6 +47,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
         migrationsDir: "src/migrations",
       },
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

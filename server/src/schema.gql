@@ -13,25 +13,23 @@ input CreateSpendInput {
   exampleField: Int!
 }
 
-input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 type Mutation {
   createSpend(createSpendInput: CreateSpendInput!): Spend!
-  createUser(createUserInput: CreateUserInput!): User!
+  register(registerInput: RegisterInput!): User!
   removeSpend(id: Int!): Spend!
-  removeUser(id: Int!): User!
   updateSpend(updateSpendInput: UpdateSpendInput!): Spend!
-  updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
   spend(id: Int!): Spend!
   spends: [Spend!]!
-  user(id: Int!): User!
-  users: [User!]!
+}
+
+input RegisterInput {
+  confirmPassword: String!
+  email: String!
+  password: String!
+  username: String!
 }
 
 type Spend {
@@ -45,12 +43,6 @@ type Spend {
 }
 
 input UpdateSpendInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
-}
-
-input UpdateUserInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!

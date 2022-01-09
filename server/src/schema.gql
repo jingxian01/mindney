@@ -13,14 +13,26 @@ input CreateSpendInput {
   exampleField: Int!
 }
 
+input LoginInput {
+  password: String!
+  usernameOrEmail: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: User!
+}
+
 type Mutation {
   createSpend(createSpendInput: CreateSpendInput!): Spend!
+  login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): User!
   removeSpend(id: Int!): Spend!
   updateSpend(updateSpendInput: UpdateSpendInput!): Spend!
 }
 
 type Query {
+  hello: String!
   spend(id: Int!): Spend!
   spends: [Spend!]!
 }

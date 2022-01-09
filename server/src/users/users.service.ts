@@ -8,4 +8,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
+  hello(userId: number) {
+    return `hi, user${userId}`;
+  }
 }

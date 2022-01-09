@@ -8,6 +8,7 @@ import { LoginInput } from "./dto/login-input.dto";
 import { LoginResponse } from "./dto/login-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
 import { ValidateResponse } from "./dto/validate-response.dto";
+import { Tokens } from "./types/tokens.type";
 
 @Injectable()
 export class AuthService {
@@ -42,9 +43,7 @@ export class AuthService {
     }
 
     // hashing
-    const saltRound = 7;
-    const salt = await genSalt(saltRound);
-    const hashedPassword = await hash(password, salt);
+    const hashedPassword = await this.hashData(password);
     password = "";
 
     // create user
@@ -53,8 +52,15 @@ export class AuthService {
       email,
       password: hashedPassword,
     });
+    const returnUser = await this.userRepository.save(newUser);
 
-    return this.userRepository.save(newUser);
+    // get tokens
+    const tokens: Tokens = await this.getTokens(returnUser.id);
+
+    // update refresh token in database
+    await this.updateRefreshToken(returnUser.id, tokens.refreshToken);
+
+    return returnUser;
   }
 
   async validateUser({
@@ -92,12 +98,65 @@ export class AuthService {
     return { user };
   }
 
-  async login(user: User): Promise<LoginResponse> {
+  async login(user: User, context: any): Promise<LoginResponse> {
+    // get tokens
+    const { accessToken, refreshToken }: Tokens = await this.getTokens(user.id);
+
+    // update refresh token in database
+    await this.updateRefreshToken(user.id, refreshToken);
+
+    // send refresh token cookie
+    context.res.cookie("mid", refreshToken, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      // todos: set up domain, secure in production
+    });
+
     return {
-      accessToken: this.jwtService.sign({
-        userId: user.id,
-      }),
+      accessToken: accessToken,
       user,
     };
+  }
+
+  async getTokens(userId: number): Promise<Tokens> {
+    const accessToken = await this.jwtService.signAsync(
+      { userId },
+      {
+        secret: process.env.ACCESS_TOKEN_SECRET,
+        expiresIn: 60 * 15,
+      },
+    );
+
+    const refreshToken = await this.jwtService.signAsync(
+      { userId },
+      {
+        secret: process.env.REFRESH_TOKEN_SECRET,
+        expiresIn: 60 * 60 * 24 * 7,
+      },
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async updateRefreshToken(userId: number, refreshToken: string) {
+    const hashedRefreshToken = await this.hashData(refreshToken);
+    await this.userRepository.update(
+      {
+        id: userId,
+      },
+      {
+        refreshToken: hashedRefreshToken,
+      },
+    );
+  }
+
+  async hashData(data: string): Promise<string> {
+    const saltRound = 7;
+    const salt = await genSalt(saltRound);
+    const hashedData = await hash(data, salt);
+    return hashedData;
   }
 }

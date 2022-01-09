@@ -20,6 +20,9 @@ export class User {
   @Column({ nullable: false })
   password: string;
 
+  @Column({ nullable: true })
+  refreshToken?: string;
+
   @Field(() => [Spend], { nullable: true })
   @OneToMany(() => Spend, (spend) => spend.user)
   spends?: Spend[];

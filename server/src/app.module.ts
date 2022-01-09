@@ -19,10 +19,14 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
     CategoriesModule,
     ConfigModule.forRoot({}),
     GraphQLModule.forRoot({
+      cors: {
+        origin: "https://localhost:4000/graphql",
+        credentials: true,
+      },
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       sortSchema: true,
-      playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      playground: true,
+      // plugins: [ApolloServerPluginLandingPageLocalDefault()],
       formatError: (error: GraphQLError) => {
         const graphQLFormattedError: GraphQLFormattedError = error?.extensions
           ?.response?.message
@@ -32,6 +36,7 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
           : error;
         return graphQLFormattedError;
       },
+      context: ({ req, res }) => ({ req, res }),
     }),
     TypeOrmModule.forRoot({
       type: "postgres",

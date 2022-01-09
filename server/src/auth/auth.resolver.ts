@@ -1,5 +1,6 @@
-import { UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
-import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
+import { Res, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Response } from "express";
 import { User } from "src/users/entities/user.entity";
 import { AuthService } from "./auth.service";
 import { LoginInput } from "./dto/login-input.dto";
@@ -21,6 +22,6 @@ export class AuthResolver {
   @UsePipes(ValidationPipe)
   @UseGuards(GqlAuthGuard)
   login(@Args("loginInput") loginInput: LoginInput, @Context() ctx: any) {
-    return this.authService.login(ctx.user);
+    return this.authService.login(ctx.user, ctx);
   }
 }

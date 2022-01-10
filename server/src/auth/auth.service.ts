@@ -2,12 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { compare, genSalt, hash } from "bcryptjs";
+import { Request, Response } from "express";
 import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { LoginInput } from "./dto/login-input.dto";
 import { LoginResponse } from "./dto/login-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
 import { ValidateResponse } from "./dto/validate-response.dto";
+import { Payload } from "./types/payload.type";
 import { Tokens } from "./types/tokens.type";
 
 @Injectable()
@@ -55,7 +57,10 @@ export class AuthService {
     const returnUser = await this.userRepository.save(newUser);
 
     // get tokens
-    const tokens: Tokens = await this.getTokens(returnUser.id);
+    const tokens: Tokens = await this.getTokens(
+      returnUser.id,
+      returnUser.email,
+    );
 
     // update refresh token in database
     await this.updateRefreshToken(returnUser.id, tokens.refreshToken);
@@ -100,7 +105,10 @@ export class AuthService {
 
   async login(user: User, context: any): Promise<LoginResponse> {
     // get tokens
-    const { accessToken, refreshToken }: Tokens = await this.getTokens(user.id);
+    const { accessToken, refreshToken }: Tokens = await this.getTokens(
+      user.id,
+      user.email,
+    );
 
     // update refresh token in database
     await this.updateRefreshToken(user.id, refreshToken);
@@ -118,9 +126,45 @@ export class AuthService {
     };
   }
 
-  async getTokens(userId: number): Promise<Tokens> {
+  async refreshToken(req: Request, res: Response) {
+    // get refresh token from cookie in the request object
+    const refreshToken = req.cookies.mid;
+    if (!refreshToken) {
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    // verify the refresh token and get the payload
+    let payload: Payload = null;
+    try {
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: process.env.REFRESH_TOKEN_SECRET,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    // find user
+    const userId = payload.userId;
+    const user = await this.userRepository.findOne({ id: userId });
+
+    // verify refresh token with the one in database
+    const refreshTokenIsValid = await compare(refreshToken, user.refreshToken);
+    if (!refreshTokenIsValid) {
+      return res.send({ ok: false, accessToken: "" });
+    }
+
+    // get new access and refresh token and update new refresh token in database
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+
+    // return the new access token
+    return res.send({ ok: true, accessToken: tokens.accessToken });
+  }
+
+  async getTokens(userId: number, email: string): Promise<Tokens> {
     const accessToken = await this.jwtService.signAsync(
-      { userId },
+      { userId, email },
       {
         secret: process.env.ACCESS_TOKEN_SECRET,
         expiresIn: 60 * 15,
@@ -128,7 +172,7 @@ export class AuthService {
     );
 
     const refreshToken = await this.jwtService.signAsync(
-      { userId },
+      { userId, email },
       {
         secret: process.env.REFRESH_TOKEN_SECRET,
         expiresIn: 60 * 60 * 24 * 7,

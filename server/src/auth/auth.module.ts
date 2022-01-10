@@ -8,7 +8,7 @@ import { AuthResolver } from "./auth.resolver";
 import { AuthService } from "./auth.service";
 import { AccessTokenStrategy } from "./strategies/access-token.strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
-import { RefreshTokenStrategy } from "./strategies/refresh-token.strategy";
+import { AuthController } from "./auth.controller";
 
 @Module({
   imports: [
@@ -17,12 +17,7 @@ import { RefreshTokenStrategy } from "./strategies/refresh-token.strategy";
     ConfigModule.forRoot({}),
     JwtModule.register({}),
   ],
-  providers: [
-    AuthResolver,
-    AuthService,
-    LocalStrategy,
-    AccessTokenStrategy,
-    RefreshTokenStrategy,
-  ],
+  providers: [AuthResolver, AuthService, LocalStrategy, AccessTokenStrategy],
+  controllers: [AuthController],
 })
 export class AuthModule {}

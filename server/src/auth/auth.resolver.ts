@@ -1,12 +1,11 @@
-import { Res, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
-import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Response } from "express";
+import { UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
 import { User } from "src/users/entities/user.entity";
 import { AuthService } from "./auth.service";
 import { LoginInput } from "./dto/login-input.dto";
 import { LoginResponse } from "./dto/login-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
-import { GqlAuthGuard } from "./guards";
+import { GqlAuthGuard } from "./guards/gql.guard";
 
 @Resolver()
 export class AuthResolver {

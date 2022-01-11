@@ -1,8 +1,13 @@
 import React from "react";
-import { Navbar } from "../components/Navbar";
+import { FaAngleLeft } from "react-icons/fa";
+import { Navbar } from "../components/commons/Navbar";
 
 interface TestProps {}
 
 export const Test: React.FC<TestProps> = ({}) => {
-  return <Navbar />;
+  return (
+    <>
+      <div>test page</div>
+    </>
+  );
 };

@@ -20,7 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   <div className="flex items-center">
                     <div className="inline-flex items-center space-x-2 text-white text-xl font-bold">
                       <FaMoneyCheck />
-                      <span>Mindney</span>
+                      <span>mindney</span>
                     </div>
                   </div>
                   <div className="hidden md:block">
@@ -29,20 +29,20 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                         <button
                           className="bg-gray-900 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-bold inline-flex items-center space-x-2"
                           onClick={() => {
-                            navigate("register");
+                            navigate("sign-up");
                           }}
                         >
                           <BiUserPlus />
-                          <span>Register</span>
+                          <span>sign up</span>
                         </button>
                         <button
                           className="bg-gray-900 text-white hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-bold inline-flex items-center space-x-2"
                           onClick={() => {
-                            navigate("login");
+                            navigate("sign-in");
                           }}
                         >
                           <BiLogIn />
-                          <span>Login</span>
+                          <span>sign in</span>
                         </button>
                       </div>
                     </div>

@@ -20,7 +20,7 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
     ConfigModule.forRoot({}),
     GraphQLModule.forRoot({
       cors: {
-        origin: "https://localhost:4000/graphql",
+        origin: "http://localhost:3000",
         credentials: true,
       },
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),

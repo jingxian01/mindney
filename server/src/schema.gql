@@ -36,6 +36,7 @@ type Query {
   hello: String!
   spend(id: Int!): Spend!
   spends: [Spend!]!
+  testQuery: String!
 }
 
 input RegisterInput {

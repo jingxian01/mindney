@@ -4,6 +4,7 @@
 - React 
 - TailwindCSS
 - NestJS
-- postgreSQL
-- graphQL
+- PostgreSQL
+- TypeORM
+- GraphQL
 - urql

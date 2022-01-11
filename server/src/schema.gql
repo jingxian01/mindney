@@ -26,6 +26,7 @@ type LoginResponse {
 type Mutation {
   createSpend(createSpendInput: CreateSpendInput!): Spend!
   login(loginInput: LoginInput!): LoginResponse!
+  logout: Boolean!
   register(registerInput: RegisterInput!): User!
   removeSpend(id: Int!): Spend!
   updateSpend(updateSpendInput: UpdateSpendInput!): Spend!

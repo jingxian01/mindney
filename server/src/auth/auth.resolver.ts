@@ -6,6 +6,7 @@ import { LoginInput } from "./dto/login-input.dto";
 import { LoginResponse } from "./dto/login-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
 import { GqlAuthGuard } from "./guards/gql.guard";
+import { JwtAuthGuard } from "./guards/jwt.guard";
 
 @Resolver()
 export class AuthResolver {
@@ -21,6 +22,12 @@ export class AuthResolver {
   @UsePipes(ValidationPipe)
   @UseGuards(GqlAuthGuard)
   login(@Args("loginInput") loginInput: LoginInput, @Context() ctx: any) {
-    return this.authService.login(ctx.user, ctx);
+    return this.authService.login(ctx.user, ctx.res);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
+  logout(@Context() ctx) {
+    return this.authService.logout(ctx.req.user.userId, ctx.res);
   }
 }

@@ -103,7 +103,7 @@ export class AuthService {
     return { user };
   }
 
-  async login(user: User, context: any): Promise<LoginResponse> {
+  async login(user: User, res: any): Promise<LoginResponse> {
     // get tokens
     const { accessToken, refreshToken }: Tokens = await this.getTokens(
       user.id,
@@ -114,7 +114,7 @@ export class AuthService {
     await this.updateRefreshToken(user.id, refreshToken);
 
     // send refresh token cookie
-    context.res.cookie("mid", refreshToken, {
+    res.cookie("mid", refreshToken, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
       // todos: set up domain, secure in production
@@ -124,6 +124,12 @@ export class AuthService {
       accessToken: accessToken,
       user,
     };
+  }
+
+  async logout(userId: number, res: any): Promise<Boolean> {
+    await this.userRepository.update({ id: userId }, { refreshToken: null });
+    res.clearCookie("mid");
+    return true;
   }
 
   async refreshToken(req: Request, res: Response) {

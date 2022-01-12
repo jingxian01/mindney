@@ -22,12 +22,12 @@ export const Login: React.FC<LoginProps> = ({}) => {
           </h2>
           <Formik
             initialValues={{ usernameOrEmail: "", password: "" }}
-            onSubmit={async (values, { setErrors }) => {
+            onSubmit={async ({ usernameOrEmail, password }, { setErrors }) => {
               setBottomError([""]); // reset error
               const response = await login({
                 loginInput: {
-                  usernameOrEmail: values.usernameOrEmail,
-                  password: values.password,
+                  usernameOrEmail,
+                  password,
                 },
               });
               if (response.error) {

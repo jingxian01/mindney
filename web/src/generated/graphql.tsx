@@ -15,6 +15,13 @@ export type Scalars = {
   Float: number;
 };
 
+export type AuthResponse = {
+  __typename?: 'AuthResponse';
+  accessToken?: Maybe<Scalars['String']>;
+  fieldError?: Maybe<FieldError>;
+  user?: Maybe<User>;
+};
+
 export type Category = {
   __typename?: 'Category';
   id: Scalars['Float'];
@@ -38,19 +45,12 @@ export type LoginInput = {
   usernameOrEmail: Scalars['String'];
 };
 
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  accessToken?: Maybe<Scalars['String']>;
-  fieldError?: Maybe<FieldError>;
-  user?: Maybe<User>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createSpend: Spend;
-  login: LoginResponse;
+  login: AuthResponse;
   logout: Scalars['Boolean'];
-  register: User;
+  register: AuthResponse;
   removeSpend: Spend;
   updateSpend: Spend;
 };
@@ -130,7 +130,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
+
+export type RegisterMutationVariables = Exact<{
+  registerInput: RegisterInput;
+}>;
+
+
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
 
 export type TestQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -157,6 +164,26 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const RegisterDocument = gql`
+    mutation Register($registerInput: RegisterInput!) {
+  register(registerInput: $registerInput) {
+    user {
+      id
+      username
+      email
+    }
+    fieldError {
+      field
+      message
+    }
+    accessToken
+  }
+}
+    `;
+
+export function useRegisterMutation() {
+  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const TestQueryDocument = gql`
     query TestQuery {

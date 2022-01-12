@@ -1,13 +1,17 @@
 import { Formik, Form } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/inputs/InputField";
+import { useRegisterMutation } from "../generated/graphql";
+import { bottomErrorHandler, fieldErrorHandler } from "../utils/errorHandler";
 
 interface RegisterProps {}
 
 export const Register: React.FC<RegisterProps> = ({}) => {
+  const [_, register] = useRegisterMutation();
   const navigate = useNavigate();
+  const [bottomError, setBottomError] = useState<Array<String>>([""]);
 
   return (
     <>
@@ -23,7 +27,34 @@ export const Register: React.FC<RegisterProps> = ({}) => {
               password: "",
               confirmPassword: "",
             }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={async (
+              { username, email, password, confirmPassword },
+              { setErrors }
+            ) => {
+              setBottomError([""]);
+              const response = await register({
+                registerInput: {
+                  username,
+                  email,
+                  password,
+                  confirmPassword,
+                },
+              });
+              if (response.error) {
+                const errorArray: string[] = bottomErrorHandler(
+                  response.error.message
+                );
+                setBottomError(errorArray);
+              }
+              if (response.data?.register.fieldError) {
+                const errorMap = fieldErrorHandler(
+                  response.data.register.fieldError
+                );
+                setErrors(errorMap);
+              }
+              // todos: store access token in local storage
+              // todos: redirect
+            }}
           >
             <Form className="space-y-4">
               <InputField
@@ -36,7 +67,7 @@ export const Register: React.FC<RegisterProps> = ({}) => {
                 name="email"
                 label="Email"
                 placeholder="email"
-                type="email"
+                type="text"
               />
               <InputField
                 name="password"
@@ -58,6 +89,17 @@ export const Register: React.FC<RegisterProps> = ({}) => {
                   Have an account?
                 </a>
               </div>
+              <ul className="px-4 list-disc">
+                {bottomError[0]
+                  ? bottomError.map((e, index) => {
+                      return (
+                        <li key={index} className=" text-red-500 font-medium">
+                          {e}
+                        </li>
+                      );
+                    })
+                  : ""}
+              </ul>
               <div className="flex flew-row space-x-4">
                 <div
                   className="inline-flex items-center w-full justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"

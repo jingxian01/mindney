@@ -4,13 +4,14 @@ import { FaAngleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/inputs/InputField";
 import { FieldError, useLoginMutation } from "../generated/graphql";
+import { bottomErrorHandler, fieldErrorHandler } from "../utils/errorHandler";
 
 interface LoginProps {}
 
 export const Login: React.FC<LoginProps> = ({}) => {
   const [_, login] = useLoginMutation();
   const navigate = useNavigate();
-  const [submitError, setSubmitError] = useState("");
+  const [bottomError, setBottomError] = useState<Array<String>>([""]);
 
   return (
     <>
@@ -22,6 +23,7 @@ export const Login: React.FC<LoginProps> = ({}) => {
           <Formik
             initialValues={{ usernameOrEmail: "", password: "" }}
             onSubmit={async (values, { setErrors }) => {
+              setBottomError([""]); // reset error
               const response = await login({
                 loginInput: {
                   usernameOrEmail: values.usernameOrEmail,
@@ -29,17 +31,19 @@ export const Login: React.FC<LoginProps> = ({}) => {
                 },
               });
               if (response.error) {
-                const removedTagError = response.error.message.split("]")[1];
-                setSubmitError(removedTagError);
+                const errorArray: string[] = bottomErrorHandler(
+                  response.error.message
+                );
+                setBottomError(errorArray);
               }
               if (response.data?.login.fieldError) {
-                const { field, message }: FieldError =
-                  response.data.login.fieldError;
-                const errorMap: Record<string, string> = {};
-                errorMap[field] = message;
+                const errorMap = fieldErrorHandler(
+                  response.data.login.fieldError
+                );
                 setErrors(errorMap);
               }
-              // todos store access token in local storage
+              // todos: store access token in local storage
+              // todos: redirect
             }}
           >
             <Form className="space-y-4">
@@ -73,7 +77,17 @@ export const Login: React.FC<LoginProps> = ({}) => {
                   </a>
                 </div>
               </div>
-              <div className=" text-red-600 font-medium">{submitError}</div>
+              <ul className="px-4 list-disc">
+                {bottomError[0]
+                  ? bottomError.map((e, index) => {
+                      return (
+                        <li key={index} className=" text-red-500 font-medium">
+                          {e}
+                        </li>
+                      );
+                    })
+                  : ""}
+              </ul>
               <div className="flex flew-row space-x-4">
                 <div
                   className="inline-flex items-center w-full justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"

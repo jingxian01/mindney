@@ -3,7 +3,7 @@ import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
 import { User } from "src/users/entities/user.entity";
 import { AuthService } from "./auth.service";
 import { LoginInput } from "./dto/login-input.dto";
-import { LoginResponse } from "./dto/login-response.dto";
+import { AuthResponse } from "./dto/auth-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
 import { GqlAuthGuard } from "./guards/gql.guard";
 import { JwtAuthGuard } from "./guards/jwt.guard";
@@ -12,15 +12,21 @@ import { JwtAuthGuard } from "./guards/jwt.guard";
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  @Mutation(() => User)
+  @Mutation(() => AuthResponse)
   @UsePipes(ValidationPipe)
-  register(@Args("registerInput") registerInput: RegisterInput): Promise<User> {
-    return this.authService.register(registerInput);
+  register(
+    @Args("registerInput") registerInput: RegisterInput,
+    @Context() ctx: any,
+  ): Promise<AuthResponse> {
+    return this.authService.register(registerInput, ctx.res);
   }
 
-  @Mutation(() => LoginResponse)
+  @Mutation(() => AuthResponse)
   @UsePipes(ValidationPipe)
-  login(@Args("loginInput") loginInput: LoginInput, @Context() ctx: any) {
+  login(
+    @Args("loginInput") loginInput: LoginInput,
+    @Context() ctx: any,
+  ): Promise<AuthResponse> {
     return this.authService.login(loginInput, ctx.res);
   }
 

@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { LoginInput } from "./dto/login-input.dto";
-import { LoginResponse } from "./dto/login-response.dto";
+import { AuthResponse } from "./dto/auth-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
 import { ValidateResponse } from "./dto/validate-response.dto";
 import { Payload } from "./types/payload.type";
@@ -19,29 +19,42 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register({
-    username,
-    email,
-    password,
-    confirmPassword,
-  }: RegisterInput): Promise<User> {
+  async register(
+    { username, email, password, confirmPassword }: RegisterInput,
+    res: any,
+  ): Promise<AuthResponse> {
     // check user with same username
     const userWithSameUsername = await this.userRepository.findOne({
       username,
     });
     if (userWithSameUsername) {
-      throw new Error("username has already been used");
+      return {
+        fieldError: {
+          field: "username",
+          message: "username has already been used",
+        },
+      };
     }
 
     // check user with same email
     const userWithSameEmail = await this.userRepository.findOne({ email });
     if (userWithSameEmail) {
-      throw new Error("email has already been used");
+      return {
+        fieldError: {
+          field: "email",
+          message: "email has already been used",
+        },
+      };
     }
 
     // check password
     if (password != confirmPassword) {
-      throw new Error("passwords do not match");
+      return {
+        fieldError: {
+          field: "password",
+          message: "passwords do not match",
+        },
+      };
     }
 
     // hashing
@@ -57,15 +70,25 @@ export class AuthService {
     const returnUser = await this.userRepository.save(newUser);
 
     // get tokens
-    const tokens: Tokens = await this.getTokens(
+    const { accessToken, refreshToken }: Tokens = await this.getTokens(
       returnUser.id,
       returnUser.email,
     );
 
     // update refresh token in database
-    await this.updateRefreshToken(returnUser.id, tokens.refreshToken);
+    await this.updateRefreshToken(returnUser.id, refreshToken);
 
-    return returnUser;
+    // send refresh token cookie
+    res.cookie("mid", refreshToken, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      // todos: set up domain, secure in production
+    });
+
+    return {
+      accessToken: accessToken,
+      user: returnUser,
+    };
   }
 
   async validateUser({
@@ -106,7 +129,7 @@ export class AuthService {
   async login(
     { usernameOrEmail, password }: LoginInput,
     res: any,
-  ): Promise<LoginResponse> {
+  ): Promise<AuthResponse> {
     // find user
     const user = await this.userRepository.findOne(
       usernameOrEmail.includes("@")

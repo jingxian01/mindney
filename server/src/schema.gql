@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthResponse {
+  accessToken: String
+  fieldError: FieldError
+  user: User
+}
+
 type Category {
   id: Float!
   name: String!
@@ -23,17 +29,11 @@ input LoginInput {
   usernameOrEmail: String!
 }
 
-type LoginResponse {
-  accessToken: String
-  fieldError: FieldError
-  user: User
-}
-
 type Mutation {
   createSpend(createSpendInput: CreateSpendInput!): Spend!
-  login(loginInput: LoginInput!): LoginResponse!
+  login(loginInput: LoginInput!): AuthResponse!
   logout: Boolean!
-  register(registerInput: RegisterInput!): User!
+  register(registerInput: RegisterInput!): AuthResponse!
   removeSpend(id: Int!): Spend!
   updateSpend(updateSpendInput: UpdateSpendInput!): Spend!
 }

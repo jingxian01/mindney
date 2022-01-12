@@ -11,7 +11,7 @@ class FieldError {
 }
 
 @ObjectType()
-export class LoginResponse {
+export class AuthResponse {
   @Field({ nullable: true })
   accessToken?: string;
 

@@ -8,6 +8,6 @@ export class LoginInput {
   usernameOrEmail: string;
 
   @Field()
-  @IsNotEmpty({ message: " password should not be empty" })
+  @IsNotEmpty({ message: "password should not be empty" })
   password: string;
 }

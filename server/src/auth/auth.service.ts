@@ -103,7 +103,38 @@ export class AuthService {
     return { user };
   }
 
-  async login(user: User, res: any): Promise<LoginResponse> {
+  async login(
+    { usernameOrEmail, password }: LoginInput,
+    res: any,
+  ): Promise<LoginResponse> {
+    // find user
+    const user = await this.userRepository.findOne(
+      usernameOrEmail.includes("@")
+        ? { email: usernameOrEmail }
+        : { username: usernameOrEmail },
+    );
+
+    // user not found
+    if (!user) {
+      return {
+        fieldError: {
+          field: "usernameOrEmail",
+          message: "invalid username or email",
+        },
+      };
+    }
+
+    // password does not match
+    const isValid = await compare(password, user.password);
+    if (!isValid) {
+      return {
+        fieldError: {
+          field: "password",
+          message: "invalid password",
+        },
+      };
+    }
+
     // get tokens
     const { accessToken, refreshToken }: Tokens = await this.getTokens(
       user.id,

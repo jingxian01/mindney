@@ -27,6 +27,12 @@ export type CreateSpendInput = {
   exampleField: Scalars['Int'];
 };
 
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type LoginInput = {
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
@@ -34,8 +40,9 @@ export type LoginInput = {
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
-  accessToken: Scalars['String'];
-  user: User;
+  accessToken?: Maybe<Scalars['String']>;
+  fieldError?: Maybe<FieldError>;
+  user?: Maybe<User>;
 };
 
 export type Mutation = {
@@ -118,12 +125,39 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type LoginMutationVariables = Exact<{
+  loginInput: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
+
 export type TestQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type TestQueryQuery = { __typename?: 'Query', testQuery: string };
 
 
+export const LoginDocument = gql`
+    mutation Login($loginInput: LoginInput!) {
+  login(loginInput: $loginInput) {
+    user {
+      id
+      username
+      email
+    }
+    accessToken
+    fieldError {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
 export const TestQueryDocument = gql`
     query TestQuery {
   testQuery

@@ -4,10 +4,10 @@ import { IsNotEmpty } from "class-validator";
 @InputType()
 export class LoginInput {
   @Field()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "username or email should not be empty" })
   usernameOrEmail: string;
 
   @Field()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: " password should not be empty" })
   password: string;
 }

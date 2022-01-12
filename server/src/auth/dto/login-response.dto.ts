@@ -2,10 +2,22 @@ import { Field, ObjectType } from "@nestjs/graphql";
 import { User } from "src/users/entities/user.entity";
 
 @ObjectType()
-export class LoginResponse {
+class FieldError {
   @Field()
-  accessToken: string;
+  field: string;
 
   @Field()
-  user: User;
+  message: string;
+}
+
+@ObjectType()
+export class LoginResponse {
+  @Field({ nullable: true })
+  accessToken?: string;
+
+  @Field({ nullable: true })
+  user?: User;
+
+  @Field({ nullable: true })
+  fieldError?: FieldError;
 }

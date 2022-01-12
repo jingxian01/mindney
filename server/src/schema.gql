@@ -13,14 +13,20 @@ input CreateSpendInput {
   exampleField: Int!
 }
 
+type FieldError {
+  field: String!
+  message: String!
+}
+
 input LoginInput {
   password: String!
   usernameOrEmail: String!
 }
 
 type LoginResponse {
-  accessToken: String!
-  user: User!
+  accessToken: String
+  fieldError: FieldError
+  user: User
 }
 
 type Mutation {

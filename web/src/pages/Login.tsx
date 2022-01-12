@@ -1,13 +1,16 @@
 import { Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/inputs/InputField";
+import { FieldError, useLoginMutation } from "../generated/graphql";
 
 interface LoginProps {}
 
 export const Login: React.FC<LoginProps> = ({}) => {
+  const [_, login] = useLoginMutation();
   const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState("");
 
   return (
     <>
@@ -18,7 +21,26 @@ export const Login: React.FC<LoginProps> = ({}) => {
           </h2>
           <Formik
             initialValues={{ usernameOrEmail: "", password: "" }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={async (values, { setErrors }) => {
+              const response = await login({
+                loginInput: {
+                  usernameOrEmail: values.usernameOrEmail,
+                  password: values.password,
+                },
+              });
+              if (response.error) {
+                const removedTagError = response.error.message.split("]")[1];
+                setSubmitError(removedTagError);
+              }
+              if (response.data?.login.fieldError) {
+                const { field, message }: FieldError =
+                  response.data.login.fieldError;
+                const errorMap: Record<string, string> = {};
+                errorMap[field] = message;
+                setErrors(errorMap);
+              }
+              // todos store access token in local storage
+            }}
           >
             <Form className="space-y-4">
               <InputField
@@ -51,6 +73,7 @@ export const Login: React.FC<LoginProps> = ({}) => {
                   </a>
                 </div>
               </div>
+              <div className=" text-red-600 font-medium">{submitError}</div>
               <div className="flex flew-row space-x-4">
                 <div
                   className="inline-flex items-center w-full justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"

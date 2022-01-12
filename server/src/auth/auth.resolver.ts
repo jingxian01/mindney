@@ -20,9 +20,8 @@ export class AuthResolver {
 
   @Mutation(() => LoginResponse)
   @UsePipes(ValidationPipe)
-  @UseGuards(GqlAuthGuard)
   login(@Args("loginInput") loginInput: LoginInput, @Context() ctx: any) {
-    return this.authService.login(ctx.user, ctx.res);
+    return this.authService.login(loginInput, ctx.res);
   }
 
   @Mutation(() => Boolean)

@@ -125,6 +125,11 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HelloQuery = { __typename?: 'Query', hello: string };
+
 export type LoginMutationVariables = Exact<{
   loginInput: LoginInput;
 }>;
@@ -145,6 +150,15 @@ export type TestQueryQueryVariables = Exact<{ [key: string]: never; }>;
 export type TestQueryQuery = { __typename?: 'Query', testQuery: string };
 
 
+export const HelloDocument = gql`
+    query Hello {
+  hello
+}
+    `;
+
+export function useHelloQuery(options: Omit<Urql.UseQueryArgs<HelloQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<HelloQuery>({ query: HelloDocument, ...options });
+};
 export const LoginDocument = gql`
     mutation Login($loginInput: LoginInput!) {
   login(loginInput: $loginInput) {

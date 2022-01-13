@@ -227,7 +227,7 @@ export class AuthService {
       { userId, email },
       {
         secret: process.env.ACCESS_TOKEN_SECRET,
-        expiresIn: 60 * 15,
+        expiresIn: "15m",
       },
     );
 
@@ -235,7 +235,7 @@ export class AuthService {
       { userId, email },
       {
         secret: process.env.REFRESH_TOKEN_SECRET,
-        expiresIn: 60 * 60 * 24 * 7,
+        expiresIn: "7 days",
       },
     );
 

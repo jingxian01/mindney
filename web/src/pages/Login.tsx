@@ -2,6 +2,7 @@ import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { FaAngleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { setAccessToken } from "../utils/accessToken";
 import { InputField } from "../components/inputs/InputField";
 import { FieldError, useLoginMutation } from "../generated/graphql";
 import { bottomErrorHandler, fieldErrorHandler } from "../utils/errorHandler";
@@ -41,6 +42,10 @@ export const Login: React.FC<LoginProps> = ({}) => {
                   response.data.login.fieldError
                 );
                 setErrors(errorMap);
+              }
+              if (response.data?.login.accessToken) {
+                setAccessToken(response.data.login.accessToken);
+                navigate("/");
               }
               // todos: store access token in local storage
               // todos: redirect

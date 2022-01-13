@@ -1,13 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import { Provider } from "urql";
 import App from "./App";
+import { client } from "./client";
+import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { createClient, Provider } from "urql";
-
-const client = createClient({
-  url: "http://localhost:4000/graphql",
-});
 
 ReactDOM.render(
   <Provider value={client}>

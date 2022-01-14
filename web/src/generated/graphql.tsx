@@ -83,9 +83,9 @@ export type MutationUpdateSpendArgs = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
+  me?: Maybe<User>;
   spend: Spend;
   spends: Array<Spend>;
-  testQuery: Scalars['String'];
 };
 
 
@@ -137,17 +137,17 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
 
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, email: string, username: string } | null | undefined };
+
 export type RegisterMutationVariables = Exact<{
   registerInput: RegisterInput;
 }>;
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
-
-export type TestQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type TestQueryQuery = { __typename?: 'Query', testQuery: string };
 
 
 export const HelloDocument = gql`
@@ -179,6 +179,19 @@ export const LoginDocument = gql`
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    email
+    username
+  }
+}
+    `;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
 export const RegisterDocument = gql`
     mutation Register($registerInput: RegisterInput!) {
   register(registerInput: $registerInput) {
@@ -198,13 +211,4 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
-};
-export const TestQueryDocument = gql`
-    query TestQuery {
-  testQuery
-}
-    `;
-
-export function useTestQueryQuery(options: Omit<Urql.UseQueryArgs<TestQueryQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TestQueryQuery>({ query: TestQueryDocument, ...options });
 };

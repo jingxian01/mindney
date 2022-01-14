@@ -9,11 +9,6 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => String)
-  testQuery() {
-    return "test success";
-  }
-
-  @Query(() => String)
   @UseGuards(JwtAuthGuard)
   hello(@Context() ctx) {
     return this.usersService.hello(ctx.req.user.userId);

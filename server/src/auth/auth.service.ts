@@ -180,6 +180,14 @@ export class AuthService {
     };
   }
 
+  async me(userId: number): Promise<User> {
+    const user = await this.userRepository.findOne({ id: userId });
+    if (!user) {
+      return null;
+    }
+    return user;
+  }
+
   async logout(userId: number, res: any): Promise<Boolean> {
     await this.userRepository.update({ id: userId }, { refreshToken: null });
     res.clearCookie("mid");

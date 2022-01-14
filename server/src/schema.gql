@@ -40,9 +40,9 @@ type Mutation {
 
 type Query {
   hello: String!
+  me: User
   spend(id: Int!): Spend!
   spends: [Spend!]!
-  testQuery: String!
 }
 
 input RegisterInput {

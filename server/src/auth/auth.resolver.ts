@@ -1,11 +1,10 @@
 import { UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
-import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Context, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { User } from "src/users/entities/user.entity";
 import { AuthService } from "./auth.service";
-import { LoginInput } from "./dto/login-input.dto";
 import { AuthResponse } from "./dto/auth-response.dto";
+import { LoginInput } from "./dto/login-input.dto";
 import { RegisterInput } from "./dto/register-input.dto";
-import { GqlAuthGuard } from "./guards/gql.guard";
 import { JwtAuthGuard } from "./guards/jwt.guard";
 
 @Resolver()
@@ -34,5 +33,11 @@ export class AuthResolver {
   @UseGuards(JwtAuthGuard)
   logout(@Context() ctx) {
     return this.authService.logout(ctx.req.user.userId, ctx.res);
+  }
+
+  @Query(() => User, { nullable: true })
+  @UseGuards(JwtAuthGuard)
+  me(@Context() ctx): Promise<User> {
+    return this.authService.me(ctx.req.user.userId);
   }
 }

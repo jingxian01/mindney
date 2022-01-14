@@ -180,7 +180,12 @@ export class AuthService {
     };
   }
 
-  async me(userId: number): Promise<User> {
+  async me(ctx: any): Promise<User> {
+    const userId = ctx.req.user.userId;
+    if (!userId) {
+      return null;
+    }
+
     const user = await this.userRepository.findOne({ id: userId });
     if (!user) {
       return null;

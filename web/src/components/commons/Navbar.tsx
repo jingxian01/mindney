@@ -1,16 +1,16 @@
 import { Disclosure } from "@headlessui/react";
+import React, { useState } from "react";
 import { FaMoneyCheck } from "react-icons/fa";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useMeQuery } from "../../generated/graphql";
+import { SignOutModal } from "../SignOutModal";
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
+  const [signOutIsOpen, setSignOutIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [{ data, fetching, error }, me] = useMeQuery({
-    requestPolicy: "network-only",
-  });
+  const [{ data, fetching }] = useMeQuery({});
 
   return (
     <>
@@ -31,7 +31,14 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                           <button className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold">
                             {data && data.me ? data.me.username : "loading..."}
                           </button>
-                          <button className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold ">
+                          <SignOutModal
+                            signOutIsOpen={signOutIsOpen}
+                            setSignOutIsOpen={setSignOutIsOpen}
+                          />
+                          <button
+                            className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                            onClick={() => setSignOutIsOpen(true)}
+                          >
                             Sign out
                           </button>
                         </div>

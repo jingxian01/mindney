@@ -4,6 +4,7 @@ import { FaAngleLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { InputField } from "../components/inputs/InputField";
 import { useRegisterMutation } from "../generated/graphql";
+import { setAccessToken } from "../utils/accessToken";
 import { bottomErrorHandler, fieldErrorHandler } from "../utils/errorHandler";
 
 interface RegisterProps {}
@@ -51,6 +52,10 @@ export const Register: React.FC<RegisterProps> = ({}) => {
                   response.data.register.fieldError
                 );
                 setErrors(errorMap);
+              }
+              if (response.data?.register.accessToken) {
+                setAccessToken(response.data.register.accessToken);
+                navigate("/");
               }
               // todos: store access token in local storage
               // todos: redirect
@@ -101,7 +106,8 @@ export const Register: React.FC<RegisterProps> = ({}) => {
                   : ""}
               </ul>
               <div className="flex flew-row space-x-4">
-                <div
+                <button
+                  type="button"
                   className="inline-flex items-center w-full justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"
                   onClick={() => {
                     navigate(-1);
@@ -109,7 +115,7 @@ export const Register: React.FC<RegisterProps> = ({}) => {
                 >
                   <FaAngleLeft size={18} />
                   Back
-                </div>
+                </button>
                 <button
                   type="submit"
                   className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"

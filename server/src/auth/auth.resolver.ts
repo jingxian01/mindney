@@ -36,8 +36,7 @@ export class AuthResolver {
   }
 
   @Query(() => User, { nullable: true })
-  @UseGuards(JwtAuthGuard)
   me(@Context() ctx): Promise<User> {
-    return this.authService.me(ctx.req.user.userId);
+    return this.authService.me(ctx);
   }
 }

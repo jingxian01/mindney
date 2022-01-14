@@ -8,7 +8,9 @@ interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const navigate = useNavigate();
-  const [{ data, fetching, error }, me] = useMeQuery();
+  const [{ data, fetching, error }, me] = useMeQuery({
+    requestPolicy: "network-only",
+  });
 
   return (
     <>

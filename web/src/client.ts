@@ -2,9 +2,9 @@ import { makeOperation } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
 import jwtDecode from "jwt-decode";
 import {
-  cacheExchange,
   createClient,
   dedupExchange,
+  cacheExchange,
   fetchExchange,
 } from "urql";
 import "./index.css";

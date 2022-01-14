@@ -1,14 +1,16 @@
 import { Disclosure } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaMoneyCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMeQuery } from "../../generated/graphql";
 import { SignOutModal } from "../SignOutModal";
+import { BiMenu, BiX } from "react-icons/bi";
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const [signOutIsOpen, setSignOutIsOpen] = useState<boolean>(false);
+  // const [authButtonGroup, setAtuhButtonGroup] = useState<JSX.Element>();
   const navigate = useNavigate();
   const [{ data, fetching }] = useMeQuery({});
 
@@ -24,6 +26,14 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                     <FaMoneyCheck />
                     <span>Mindney</span>
                   </div>
+                  <Disclosure.Button className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <BiX className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <BiMenu className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </Disclosure.Button>
                   <div className="hidden md:block">
                     {fetching || (data && data.me) ? (
                       <div>
@@ -68,6 +78,42 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   </div>
                 </div>
               </div>
+              <Disclosure.Panel className="sm:hidden">
+                <div className="space-y-2 px-3 pt-2 pb-3">
+                  {fetching || (data && data.me) ? (
+                    <>
+                      <button className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold">
+                        {data && data.me ? data.me.username : "loading..."}
+                      </button>
+                      <button
+                        className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                        onClick={() => setSignOutIsOpen(true)}
+                      >
+                        Sign out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                        onClick={() => {
+                          navigate("sign-up");
+                        }}
+                      >
+                        Sign up
+                      </button>
+                      <button
+                        className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold "
+                        onClick={() => {
+                          navigate("sign-in");
+                        }}
+                      >
+                        Sign in
+                      </button>
+                    </>
+                  )}
+                </div>
+              </Disclosure.Panel>
             </>
           )}
         </Disclosure>

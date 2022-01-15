@@ -8,7 +8,6 @@ import { Repository } from "typeorm";
 import { LoginInput } from "./dto/login-input.dto";
 import { AuthResponse } from "./dto/auth-response.dto";
 import { RegisterInput } from "./dto/register-input.dto";
-import { ValidateResponse } from "./dto/validate-response.dto";
 import { Payload } from "./types/payload.type";
 import { Tokens } from "./types/tokens.type";
 
@@ -89,41 +88,6 @@ export class AuthService {
       accessToken: accessToken,
       user: returnUser,
     };
-  }
-
-  async validateUser({
-    usernameOrEmail,
-    password,
-  }: LoginInput): Promise<ValidateResponse> {
-    // find user
-    const user = await this.userRepository.findOne(
-      usernameOrEmail.includes("@")
-        ? { email: usernameOrEmail }
-        : { username: usernameOrEmail },
-    );
-
-    // user not found
-    if (!user) {
-      return {
-        fieldError: {
-          field: "usernameOrEmail",
-          message: "invalid username or email",
-        },
-      };
-    }
-
-    // password does not match
-    const isValid = await compare(password, user.password);
-    if (!isValid) {
-      return {
-        fieldError: {
-          field: "password",
-          message: "invalid password",
-        },
-      };
-    }
-
-    return { user };
   }
 
   async login(
@@ -213,7 +177,6 @@ export class AuthService {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
     } catch (err) {
-      console.log(err);
       return res.send({ ok: false, accessToken: "" });
     }
 

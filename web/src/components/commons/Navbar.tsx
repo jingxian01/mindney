@@ -16,16 +16,16 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
 
   return (
     <div className="min-h-full">
-      <Disclosure as="nav" className="bg-gray-800 py-1">
+      <Disclosure as="nav" className="bg-teal-700">
         {({ open }) => (
           <>
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
                 <div className="inline-flex items-center space-x-2 text-white text-xl font-bold">
                   <FaMoneyCheck />
                   <span>Mindney</span>
                 </div>
-                <Disclosure.Button className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-white  hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   {open ? (
                     <BiX className="block h-6 w-6" aria-hidden="true" />
                   ) : (
@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   {fetching || (data && data.me) ? (
                     <div>
                       <div className="ml-10 flex items-baseline space-x-10">
-                        <button className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold">
+                        <button className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
                           {data && data.me ? data.me.username : "loading..."}
                         </button>
                         <SignOutModal
@@ -44,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                           setSignOutIsOpen={setSignOutIsOpen}
                         />
                         <button
-                          className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                          className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
                           onClick={() => setSignOutIsOpen(true)}
                         >
                           Sign out
@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                     <div>
                       <div className="ml-10 flex items-baseline space-x-10">
                         <button
-                          className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                          className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
                           onClick={() => {
                             navigate("sign-up");
                           }}
@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                           Sign up
                         </button>
                         <button
-                          className="hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold "
+                          className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
                           onClick={() => {
                             navigate("sign-in");
                           }}
@@ -80,11 +80,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               <div className="space-y-2 px-3 pt-2 pb-3">
                 {fetching || (data && data.me) ? (
                   <>
-                    <button className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold">
+                    <button className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
                       {data && data.me ? data.me.username : "loading..."}
                     </button>
                     <button
-                      className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                      className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
                       onClick={() => setSignOutIsOpen(true)}
                     >
                       Sign out
@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 ) : (
                   <>
                     <button
-                      className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold"
+                      className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
                       onClick={() => {
                         navigate("sign-up");
                       }}
@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                       Sign up
                     </button>
                     <button
-                      className="w-full hover:bg-gray-900 text-white bg-gray-700 px-6 py-2 rounded-md text-sm font-bold "
+                      className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
                       onClick={() => {
                         navigate("sign-in");
                       }}

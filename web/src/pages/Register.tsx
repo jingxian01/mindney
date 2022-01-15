@@ -100,7 +100,7 @@ export const Register: React.FC = ({}) => {
             <div className="text-sm">
               <a
                 href="/sign-in"
-                className="font-medium text-gray-600 hover:text-gray-900"
+                className="font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus:rounded-sm focus:ring-2focus:ring-teal-700"
               >
                 Have an account?
               </a>
@@ -119,7 +119,7 @@ export const Register: React.FC = ({}) => {
             <div className="flex flew-row space-x-4">
               <button
                 type="button"
-                className="inline-flex items-center w-full justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 hover:cursor-pointer"
+                className="inline-flex items-center w-full justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-teal-800 hover:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-700"
                 onClick={() => {
                   navigate(-1);
                 }}
@@ -129,7 +129,7 @@ export const Register: React.FC = ({}) => {
               </button>
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                className="inline-flex items-center w-full justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-teal-800 hover:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-700"
               >
                 Sign up
               </button>

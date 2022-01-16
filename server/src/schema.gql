@@ -15,8 +15,11 @@ type Category {
 }
 
 input CreateSpendInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  amount: Int!
+  categoryId: Int!
+  date: String!
+  description: String
+  name: String!
 }
 
 type FieldError {
@@ -64,9 +67,12 @@ type Spend {
 }
 
 input UpdateSpendInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  amount: Int
+  categoryId: Int
+  date: String
+  description: String
   id: Int!
+  name: String
 }
 
 type User {

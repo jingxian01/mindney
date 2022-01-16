@@ -12,4 +12,9 @@ export class UsersService {
   hello(userId: number) {
     return `hi, user${userId}`;
   }
+
+  getUserById(userId: number): Promise<User> {
+    const user = this.userRepository.findOne({ id: userId });
+    return user ? user : null;
+  }
 }

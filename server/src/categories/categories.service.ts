@@ -13,4 +13,9 @@ export class CategoriesService {
   getAllCategories(): Promise<Array<Category>> {
     return this.categoryRepository.find();
   }
+
+  getCategoryById(categoryId: number): Promise<Category> {
+    const category = this.categoryRepository.findOne({ id: categoryId });
+    return category ? category : null;
+  }
 }

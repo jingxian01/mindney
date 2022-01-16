@@ -7,7 +7,6 @@ import { User } from "src/users/entities/user.entity";
 import { AuthResolver } from "./auth.resolver";
 import { AuthService } from "./auth.service";
 import { AccessTokenStrategy } from "./strategies/access-token.strategy";
-import { LocalStrategy } from "./strategies/local.strategy";
 import { AuthController } from "./auth.controller";
 
 @Module({
@@ -17,7 +16,7 @@ import { AuthController } from "./auth.controller";
     ConfigModule.forRoot({}),
     JwtModule.register({}),
   ],
-  providers: [AuthResolver, AuthService, LocalStrategy, AccessTokenStrategy],
+  providers: [AuthResolver, AuthService, AccessTokenStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

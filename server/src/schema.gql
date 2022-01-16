@@ -39,6 +39,7 @@ type Mutation {
 }
 
 type Query {
+  getAllCategories: [Category!]!
   hello: String!
   me: User
   spend(id: Int!): Spend!

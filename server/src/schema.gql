@@ -14,14 +14,6 @@ type Category {
   spends: [Spend!]
 }
 
-input CreateSpendInput {
-  amount: Int!
-  categoryId: Int!
-  date: String!
-  description: String
-  name: String!
-}
-
 type FieldError {
   field: String!
   message: String!
@@ -33,20 +25,26 @@ input LoginInput {
 }
 
 type Mutation {
-  createSpend(createSpendInput: CreateSpendInput!): Spend!
+  createSpend(spendInput: SpendInput!): Spend!
   login(loginInput: LoginInput!): AuthResponse!
   logout: Boolean!
   register(registerInput: RegisterInput!): AuthResponse!
-  removeSpend(id: Int!): Spend!
-  updateSpend(updateSpendInput: UpdateSpendInput!): Spend!
+  removeSpend(spendId: Int!): Boolean!
+  updateSpend(spendId: Int!, spendInput: SpendInput!): Spend!
+}
+
+input OrderBy {
+  by: String!
+  order: String
 }
 
 type Query {
   getAllCategories: [Category!]!
+  getSpendsByDay(orderBy: OrderBy!): [Spend!]!
+  getSpendsByMonth(orderBy: OrderBy!): [Spend!]!
+  getSpendsByWeek(orderBy: OrderBy!): [Spend!]!
   hello: String!
   me: User
-  spend(id: Int!): Spend!
-  spends: [Spend!]!
 }
 
 input RegisterInput {
@@ -66,13 +64,12 @@ type Spend {
   user: User!
 }
 
-input UpdateSpendInput {
-  amount: Int
-  categoryId: Int
+input SpendInput {
+  amount: Int!
+  categoryId: Int!
   date: String
   description: String
-  id: Int!
-  name: String
+  name: String!
 }
 
 type User {

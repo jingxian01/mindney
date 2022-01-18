@@ -2,7 +2,7 @@ import { InputType, Int, Field } from "@nestjs/graphql";
 import { IsNotEmpty, Min } from "class-validator";
 
 @InputType()
-export class CreateSpendInput {
+export class SpendInput {
   @Field()
   @IsNotEmpty()
   name: string;
@@ -15,9 +15,8 @@ export class CreateSpendInput {
   @IsNotEmpty()
   amount: number;
 
-  @Field(() => String)
-  @IsNotEmpty()
-  date: Date;
+  @Field(() => String, { nullable: true })
+  date?: Date;
 
   @Field(() => Int)
   @IsNotEmpty()

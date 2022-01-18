@@ -1,11 +1,11 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from "@nestjs/graphql";
 import { SpendsService } from "./spends.service";
 import { Spend } from "./entities/spend.entity";
-import { CreateSpendInput } from "./dto/create-spend.input";
-import { UpdateSpendInput } from "./dto/update-spend.input";
-import { UseGuards } from "@nestjs/common";
+import { UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
 import { Payload } from "src/auth/types/payload.type";
+import { OrderBy } from "./dto/order-by.input";
+import { SpendInput } from "./dto/spend.input";
 
 @Resolver(() => Spend)
 export class SpendsResolver {
@@ -13,31 +13,63 @@ export class SpendsResolver {
 
   @Mutation(() => Spend)
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   createSpend(
-    @Args("createSpendInput") createSpendInput: CreateSpendInput,
+    @Args("spendInput") spendInput: SpendInput,
     @Context() ctx: any,
   ): Promise<Spend> {
     const payload: Payload = ctx.req.user;
-    return this.spendsService.create(createSpendInput, payload);
-  }
-
-  @Query(() => [Spend], { name: "spends" })
-  findAll() {
-    return this.spendsService.findAll();
-  }
-
-  @Query(() => Spend, { name: "spend" })
-  findOne(@Args("id", { type: () => Int }) id: number) {
-    return this.spendsService.findOne(id);
+    return this.spendsService.createSpend(spendInput, payload);
   }
 
   @Mutation(() => Spend)
-  updateSpend(@Args("updateSpendInput") updateSpendInput: UpdateSpendInput) {
-    return this.spendsService.update(updateSpendInput.id, updateSpendInput);
+  @UseGuards(JwtAuthGuard)
+  updateSpend(
+    @Args("spendId", { type: () => Int }) spendId: number,
+    @Args("spendInput") spendInput: SpendInput,
+    @Context() ctx: any,
+  ): Promise<Spend> {
+    const payload: Payload = ctx.req.user;
+    return this.spendsService.updateSpend(spendId, spendInput, payload);
   }
 
-  @Mutation(() => Spend)
-  removeSpend(@Args("id", { type: () => Int }) id: number) {
-    return this.spendsService.remove(id);
+  @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
+  removeSpend(
+    @Args("spendId", { type: () => Int }) spendId: number,
+    @Context() ctx: any,
+  ): Promise<Boolean> {
+    const payload: Payload = ctx.req.user;
+    return this.spendsService.removeSpend(spendId, payload);
+  }
+
+  @Query(() => [Spend])
+  @UseGuards(JwtAuthGuard)
+  getSpendsByDay(
+    @Args("orderBy") order: OrderBy,
+    @Context() ctx: any,
+  ): Promise<Array<Spend>> {
+    const payload: Payload = ctx.req.user;
+    return this.spendsService.getSpendsByDay(order, payload);
+  }
+
+  @Query(() => [Spend])
+  @UseGuards(JwtAuthGuard)
+  getSpendsByWeek(
+    @Args("orderBy") order: OrderBy,
+    @Context() ctx: any,
+  ): Promise<Array<Spend>> {
+    const payload: Payload = ctx.req.user;
+    return this.spendsService.getSpendsByWeek(order, payload);
+  }
+
+  @Query(() => [Spend])
+  @UseGuards(JwtAuthGuard)
+  getSpendsByMonth(
+    @Args("orderBy") order: OrderBy,
+    @Context() ctx: any,
+  ): Promise<Array<Spend>> {
+    const payload: Payload = ctx.req.user;
+    return this.spendsService.getSpendsByMonth(order, payload);
   }
 }

@@ -22,7 +22,7 @@ describe("SpendsService", () => {
   ];
   const mockSpendRepository = {
     create: jest.fn().mockImplementation((dto) => ({
-      id: 1,
+      id: Date.now(),
       ...dto,
     })),
     save: jest
@@ -86,7 +86,7 @@ describe("SpendsService", () => {
 
   describe("create", () => {
     it("should return null", async () => {
-      const newSpend = await service.create(mockCreateSpendDto, {
+      const newSpend = await service.createSpend(mockCreateSpendDto, {
         ...mockPayload,
         userId: 123456,
       });
@@ -94,7 +94,7 @@ describe("SpendsService", () => {
     });
 
     it("should return null", async () => {
-      const newSpend = await service.create(
+      const newSpend = await service.createSpend(
         {
           ...mockCreateSpendDto,
           categoryId: 123456,
@@ -105,7 +105,10 @@ describe("SpendsService", () => {
     });
 
     it("should create a spend", async () => {
-      const newSpend = await service.create(mockCreateSpendDto, mockPayload);
+      const newSpend = await service.createSpend(
+        mockCreateSpendDto,
+        mockPayload,
+      );
       expect(newSpend).toEqual({
         id: expect.any(Number),
         name: mockCreateSpendDto.name,

@@ -11,6 +11,7 @@ import { join } from "path";
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import { AuthModule } from "./auth/auth.module";
 import { GraphQLError, GraphQLFormattedError } from "graphql";
+import config from "ormconfig";
 
 @Module({
   imports: [
@@ -38,20 +39,7 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
       },
       context: ({ req, res }) => ({ req, res }),
     }),
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: process.env.DB_HOST,
-      port: Number.parseInt(process.env.DB_PORT),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      synchronize: true,
-      entities: ["dist/**/entities/*.entity.js"],
-      migrations: ["dist/migrations/*.js"],
-      cli: {
-        migrationsDir: "src/migrations",
-      },
-    }),
+    TypeOrmModule.forRoot(config),
     AuthModule,
   ],
   controllers: [AppController],

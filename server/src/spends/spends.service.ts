@@ -13,6 +13,7 @@ import {
 } from "./utils/date";
 import { OrderBy } from "./dto/order-by.input";
 import { SpendInput } from "./dto/spend.input";
+import { User } from "src/users/entities/user.entity";
 
 @Injectable()
 export class SpendsService {
@@ -100,26 +101,10 @@ export class SpendsService {
       throw new Error("user not found");
     }
 
-    const currentDate = getCurrentDate();
-    const currentDatePlusOneDay = getCurrentDatePlusOneDay();
+    const start = getCurrentDate();
+    const end = getCurrentDatePlusOneDay();
 
-    // todos: pagination
-    const spendsInDay = await this.spendRepository.find({
-      where: { user, date: Between(currentDate, currentDatePlusOneDay) },
-      relations: ["category", "user"],
-      take: 10,
-      order:
-        orderBy.by === "orderByAmount"
-          ? {
-              amount: orderBy.order ? "ASC" : "DESC",
-              date: "DESC",
-            }
-          : {
-              date: orderBy.order ? "DESC" : "ASC",
-            },
-    });
-
-    return spendsInDay;
+    return this.findSpends(start, end, user, orderBy);
   }
 
   async getSpendsByWeek(
@@ -133,23 +118,7 @@ export class SpendsService {
 
     const { start, end } = getCurrentWeek();
 
-    // todos: pagination
-    const spendsInDay = await this.spendRepository.find({
-      where: { user, date: Between(start, end) },
-      relations: ["category", "user"],
-      take: 10,
-      order:
-        orderBy.by === "orderByAmount"
-          ? {
-              amount: orderBy.order ? "ASC" : "DESC",
-              date: "DESC",
-            }
-          : {
-              date: orderBy.order ? "DESC" : "ASC",
-            },
-    });
-
-    return spendsInDay;
+    return this.findSpends(start, end, user, orderBy);
   }
 
   async getSpendsByMonth(
@@ -163,23 +132,7 @@ export class SpendsService {
 
     const { start, end } = getCurrentMonth();
 
-    // todos: pagination
-    const spendsInDay = await this.spendRepository.find({
-      where: { user, date: Between(start, end) },
-      relations: ["category", "user"],
-      take: 10,
-      order:
-        orderBy.by === "orderByAmount"
-          ? {
-              amount: orderBy.order ? "ASC" : "DESC",
-              date: "DESC",
-            }
-          : {
-              date: orderBy.order ? "DESC" : "ASC",
-            },
-    });
-
-    return spendsInDay;
+    return this.findSpends(start, end, user, orderBy);
   }
 
   async removeSpend(spendId: number, { userId }: Payload): Promise<Boolean> {
@@ -203,6 +156,26 @@ export class SpendsService {
     await this.spendRepository.delete({ id: spendId });
 
     return true;
+  }
+
+  async findSpends(start: string, end: string, user: User, orderBy: OrderBy) {
+    // todos: pagination
+    const spends = await this.spendRepository.find({
+      where: { user, date: Between(start, end) },
+      relations: ["category", "user"],
+      take: 10,
+      order:
+        orderBy.by === "orderByAmount"
+          ? {
+              amount: orderBy.order ? "ASC" : "DESC",
+              date: "DESC",
+            }
+          : {
+              date: orderBy.order ? "DESC" : "ASC",
+            },
+    });
+
+    return spends;
   }
 
   isAuthor(idFromSpend: number, idFromUser: number) {

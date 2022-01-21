@@ -1,10 +1,10 @@
 import { Disclosure } from "@headlessui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { BiMenu, BiX } from "react-icons/bi";
 import { FaMoneyCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useMeQuery } from "../../generated/graphql";
+import { useAppSelector } from "../../store/hook";
 import { SignOutModal } from "../SignOutModal";
-import { BiMenu, BiX } from "react-icons/bi";
 
 interface NavbarProps {}
 
@@ -12,7 +12,8 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   const [signOutIsOpen, setSignOutIsOpen] = useState<boolean>(false);
   // const [authButtonGroup, setAtuhButtonGroup] = useState<JSX.Element>();
   const navigate = useNavigate();
-  const [{ data, fetching }] = useMeQuery({});
+  // const [{ data, fetching }] = useMeQuery({});
+  const userData = useAppSelector((state) => state.user);
 
   return (
     <div className="min-h-full">
@@ -33,11 +34,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   )}
                 </Disclosure.Button>
                 <div className="hidden md:block">
-                  {fetching || (data && data.me) ? (
+                  {userData && userData.user ? (
                     <div>
                       <div className="ml-10 flex items-baseline space-x-10">
                         <button className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
-                          {data && data.me ? data.me.username : "loading..."}
+                          {userData.user.username}
                         </button>
                         <SignOutModal
                           signOutIsOpen={signOutIsOpen}
@@ -78,10 +79,10 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             </div>
             <Disclosure.Panel className="sm:hidden">
               <div className="space-y-2 px-3 pt-2 pb-3">
-                {fetching || (data && data.me) ? (
+                {userData && userData.user ? (
                   <>
                     <button className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
-                      {data && data.me ? data.me.username : "loading..."}
+                      {userData.user.username}
                     </button>
                     <button
                       className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getAccessToken } from "../utils/accessToken";
 import { Layout } from "../components/commons/Layout";
 import { useHelloQuery } from "../generated/graphql";
 
@@ -11,7 +10,6 @@ export const Home: React.FC<HomeProps> = ({}) => {
     requestPolicy: "network-only",
   });
   const [render, setRender] = useState<string>("");
-  const token = getAccessToken();
 
   useEffect(() => {
     if (fetching) {

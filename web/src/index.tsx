@@ -1,17 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "urql";
+import { Provider as ReduxProvider } from "react-redux";
+import { Provider as UrqlProvider } from "urql";
 import App from "./App";
 import { client } from "./client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import { store } from "./store/store";
 
 ReactDOM.render(
-  <Provider value={client}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </Provider>,
+  <ReduxProvider store={store}>
+    <UrqlProvider value={client}>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </UrqlProvider>
+  </ReduxProvider>,
   document.getElementById("root")
 );
 

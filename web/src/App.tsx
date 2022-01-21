@@ -5,7 +5,6 @@ import { useMeQuery } from "./generated/graphql";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
-import { Test } from "./pages/Test";
 import { useAppDispatch } from "./store/hook";
 import { RemoveUserProfile, SetUserProfile } from "./store/userReducer";
 
@@ -25,7 +24,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="test" element={<Test />}></Route>
         <Route path="sign-up" element={<Register />}></Route>
         <Route path="sign-in" element={<Login />}></Route>
       </Routes>

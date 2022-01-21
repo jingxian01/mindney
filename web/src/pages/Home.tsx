@@ -1,40 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Layout } from "../components/commons/Layout";
-import { useHelloQuery } from "../generated/graphql";
+import { Intro } from "../components/views/Intro";
+import { View } from "../components/views/View";
+import { useAppSelector } from "../store/hook";
 
 interface HomeProps {}
 
 export const Home: React.FC<HomeProps> = ({}) => {
-  const [{ data, fetching, error }, hello] = useHelloQuery({
-    pause: true,
-    requestPolicy: "network-only",
-  });
-  const [render, setRender] = useState<string>("");
+  // const [{ data, fetching, error }, hello] = useHelloQuery({
+  //   pause: true,
+  //   requestPolicy: "network-only",
+  // });
+  const userData = useAppSelector((state) => state.user);
 
-  useEffect(() => {
-    if (fetching) {
-      setRender("loading...");
-    }
-
-    if (error) {
-      setRender(error.message);
-    }
-
-    if (data) {
-      setRender(data.hello);
-    }
-  }, [data, fetching, error]);
-
-  return (
-    <Layout>
-      <div>homepage</div>
-      <button
-        className="p-2 rounded-md shadow-md border-gray-800"
-        onClick={hello}
-      >
-        hello query
-      </button>
-      <div>{render}</div>
-    </Layout>
-  );
+  return <Layout>{userData && userData.user ? <View /> : <Intro />}</Layout>;
 };

@@ -19,7 +19,7 @@ export const Graph: React.FC<GraphProps> = ({}) => {
   return (
     <Layout>
       <ViewLayout>
-        <div>table view</div>
+        <div>graph view</div>
       </ViewLayout>
     </Layout>
   );

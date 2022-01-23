@@ -1,24 +1,46 @@
 import { Disclosure } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiMenu, BiX } from "react-icons/bi";
 import { FaMoneyCheck } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../store/hook";
 import { SignOutModal } from "../SignOutModal";
 
 interface NavbarProps {}
 
+interface NavbarTabs {
+  displayName: string;
+  to: string;
+}
+
+const navbarTabs: NavbarTabs[] = [
+  {
+    displayName: "Table",
+    to: "/table",
+  },
+  {
+    displayName: "Graph",
+    to: "/graph",
+  },
+];
+
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const [signOutIsOpen, setSignOutIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const userData = useAppSelector((state) => state.user);
+  const [currentPath, setCurrentPath] = useState<String>("");
+  const location = useLocation();
+
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+  }, [location]);
 
   return (
     <div className="min-h-full">
       <Disclosure as="nav" className="bg-teal-700">
         {({ open }) => (
           <>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
                 <div className="flex space-x-4">
                   <div className="inline-flex items-center space-x-2 text-white text-xl font-bold">
@@ -28,18 +50,21 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   <div className="hidden md:block">
                     {userData && userData.user ? (
                       <div className="ml-10 flex items-baseline space-x-10">
-                        <button
-                          className="hover:bg-teal-800 text-white bg-teal-700 px-6 py-2 rounded-md text-md font-bold"
-                          onClick={() => navigate("/table")}
-                        >
-                          Table
-                        </button>
-                        <button
-                          className="hover:bg-teal-800 text-white bg-teal-700 px-6 py-2 rounded-md text-md font-bold"
-                          onClick={() => navigate("/graph")}
-                        >
-                          Graph
-                        </button>
+                        {navbarTabs.map((tab) => {
+                          return (
+                            <button
+                              key={tab.displayName}
+                              className={`${
+                                currentPath == tab.to
+                                  ? "bg-teal-900"
+                                  : "hover:bg-teal-800 bg-teal-700"
+                              } text-white  px-6 py-2 rounded-md text-md font-bold`}
+                              onClick={() => navigate(tab.to)}
+                            >
+                              {tab.displayName}
+                            </button>
+                          );
+                        })}
                       </div>
                     ) : null}
                   </div>

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "../components/commons/Layout";
-import { Intro } from "../components/views/Intro";
-import { View } from "../components/views/View";
+import { ViewLayout } from "../components/views/ViewLayout";
 import { useAppSelector } from "../store/hook";
 
 interface HomeProps {}
@@ -23,7 +22,9 @@ export const Home: React.FC<HomeProps> = ({}) => {
 
   return (
     <Layout>
-      <Intro />
+      <ViewLayout>
+        <div>intro page</div>
+      </ViewLayout>
     </Layout>
   );
 };

@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../generated/graphql";
 import { removeAccessToken } from "../utils/accessToken";
 
@@ -14,6 +15,7 @@ export const SignOutModal: React.FC<SignOutModalProps> = ({
 }) => {
   const [_, logout] = useLogoutMutation();
   const cancelButtonRef = useRef(null);
+  const navigate = useNavigate();
 
   return (
     <Transition.Root show={signOutIsOpen} as={Fragment}>
@@ -75,6 +77,7 @@ export const SignOutModal: React.FC<SignOutModalProps> = ({
                   onClick={() => {
                     logout();
                     removeAccessToken();
+                    navigate("/");
                     setSignOutIsOpen(false);
                   }}
                 >

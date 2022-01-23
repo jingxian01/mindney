@@ -10,9 +10,7 @@ interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const [signOutIsOpen, setSignOutIsOpen] = useState<boolean>(false);
-  // const [authButtonGroup, setAtuhButtonGroup] = useState<JSX.Element>();
   const navigate = useNavigate();
-  // const [{ data, fetching }] = useMeQuery({});
   const userData = useAppSelector((state) => state.user);
 
   return (
@@ -96,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             <Disclosure.Panel className="sm:hidden">
               <div className="space-y-2 px-3 pt-2 pb-3">
                 {userData && userData.user ? (
-                  <>
+                  <div className="flex space-x-3">
                     <button className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
                       {userData.user.username}
                     </button>
@@ -106,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                     >
                       Sign out
                     </button>
-                  </>
+                  </div>
                 ) : (
                   <>
                     <button

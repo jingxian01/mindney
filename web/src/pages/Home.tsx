@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Layout } from "../components/commons/Layout";
 import { Intro } from "../components/views/Intro";
 import { View } from "../components/views/View";
@@ -12,6 +13,17 @@ export const Home: React.FC<HomeProps> = ({}) => {
   //   requestPolicy: "network-only",
   // });
   const userData = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
 
-  return <Layout>{userData && userData.user ? <View /> : <Intro />}</Layout>;
+  useEffect(() => {
+    if (userData && userData.user) {
+      navigate("/table");
+    }
+  }, [userData]);
+
+  return (
+    <Layout>
+      <Intro />
+    </Layout>
+  );
 };

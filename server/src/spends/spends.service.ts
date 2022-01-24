@@ -167,11 +167,11 @@ export class SpendsService {
       order:
         orderBy.by === "orderByAmount"
           ? {
-              amount: orderBy.order ? "ASC" : "DESC",
+              amount: orderBy.order === "ASC" ? "ASC" : "DESC",
               date: "DESC",
             }
           : {
-              date: orderBy.order ? "DESC" : "ASC",
+              date: orderBy.order === "DESC" ? "DESC" : "ASC",
             },
     });
 

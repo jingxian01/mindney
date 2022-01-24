@@ -10,18 +10,26 @@ import { useAppSelector } from "../store/hook";
 interface TableProps {}
 
 const timeTabs = ["Day", "Week", "Month"];
-const orderTabs = ["Date", "Amount"];
 
 export const Table: React.FC<TableProps> = ({}) => {
   const userData = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const [currentTimeTab, SetCurrentTimeTab] = useState<string>("Day");
-  const [currentOrderTab, SetCurrentOrderTab] = useState<string>("Date");
+  const [currentOrderBy, setCurrentOrderBy] = useState<string>("Date");
+  const [amountIsDesc, setAmountIsDesc] = useState<boolean>(true);
+  const [dateIsDesc, setDateIsDesc] = useState<boolean>(true);
   const [{ data, fetching }, getSpendsByDay] = useGetSpendsByDayQuery({
     variables: {
       orderBy: {
-        by: `orderBy${currentOrderTab}`,
-        order: "",
+        by: `orderBy${currentOrderBy}`,
+        order:
+          currentOrderBy === "Amount"
+            ? amountIsDesc
+              ? "DESC"
+              : "ASC"
+            : dateIsDesc
+            ? "DESC"
+            : "ASC",
       },
     },
   });
@@ -62,8 +70,12 @@ export const Table: React.FC<TableProps> = ({}) => {
               <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
                   <TableColumns
-                    currentOrder={currentOrderTab}
-                    setCurrentOrder={SetCurrentOrderTab}
+                    currentOrderBy={currentOrderBy}
+                    setCurrentOrderBy={setCurrentOrderBy}
+                    amountIsDesc={amountIsDesc}
+                    setAmountIsDesc={setAmountIsDesc}
+                    dateIsDesc={dateIsDesc}
+                    setDateIsDesc={setDateIsDesc}
                   />
                   <tbody className="bg-white divide-y divide-gray-200">
                     {fetching ? (

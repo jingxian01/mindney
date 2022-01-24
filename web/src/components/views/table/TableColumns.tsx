@@ -1,11 +1,22 @@
 import React from "react";
 
 interface TableColumnsProps {
-  currentOrder: string;
-  setCurrentOrder: React.Dispatch<React.SetStateAction<string>>;
+  currentOrderBy: string;
+  setCurrentOrderBy: React.Dispatch<React.SetStateAction<string>>;
+  amountIsDesc: boolean;
+  setAmountIsDesc: React.Dispatch<React.SetStateAction<boolean>>;
+  dateIsDesc: boolean;
+  setDateIsDesc: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const tableColNames = [
+interface TableColumnNames {
+  id: number;
+  name: string;
+  isClickable: boolean;
+  currentOrder?: string;
+}
+
+const tableColNames: TableColumnNames[] = [
   {
     id: 1,
     name: "Name",
@@ -29,8 +40,12 @@ const tableColNames = [
 ];
 
 export const TableColumns: React.FC<TableColumnsProps> = ({
-  currentOrder,
-  setCurrentOrder,
+  currentOrderBy,
+  setCurrentOrderBy,
+  amountIsDesc,
+  setAmountIsDesc,
+  dateIsDesc,
+  setDateIsDesc,
 }) => {
   return (
     <thead className="bg-gray-50">
@@ -40,13 +55,22 @@ export const TableColumns: React.FC<TableColumnsProps> = ({
             key={col.id}
             scope="col"
             className={`px-6 py-3 text-left text-xs uppercase tracking-wider ${
-              currentOrder === col.name
+              currentOrderBy === col.name
                 ? "text-gray-900 font-bold"
                 : "text-gray-500 font-medium"
             }`}
             onClick={() => {
+              // todos: think of another more efficient way to do this
               if (col.isClickable) {
-                setCurrentOrder(col.name);
+                if (col.name === currentOrderBy) {
+                  if (col.name === "Amount") {
+                    setAmountIsDesc(!amountIsDesc);
+                  } else {
+                    setDateIsDesc(!dateIsDesc);
+                  }
+                } else {
+                  setCurrentOrderBy(col.name);
+                }
               }
             }}
           >

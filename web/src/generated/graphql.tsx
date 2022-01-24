@@ -29,11 +29,6 @@ export type Category = {
   spends?: Maybe<Array<Spend>>;
 };
 
-export type CreateSpendInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int'];
-};
-
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
@@ -51,13 +46,13 @@ export type Mutation = {
   login: AuthResponse;
   logout: Scalars['Boolean'];
   register: AuthResponse;
-  removeSpend: Spend;
+  removeSpend: Scalars['Boolean'];
   updateSpend: Spend;
 };
 
 
 export type MutationCreateSpendArgs = {
-  createSpendInput: CreateSpendInput;
+  spendInput: SpendInput;
 };
 
 
@@ -72,25 +67,43 @@ export type MutationRegisterArgs = {
 
 
 export type MutationRemoveSpendArgs = {
-  id: Scalars['Int'];
+  spendId: Scalars['Int'];
 };
 
 
 export type MutationUpdateSpendArgs = {
-  updateSpendInput: UpdateSpendInput;
+  spendId: Scalars['Int'];
+  spendInput: SpendInput;
+};
+
+export type OrderBy = {
+  by: Scalars['String'];
+  order?: InputMaybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  getAllCategories: Array<Category>;
+  getSpendsByDay: Array<Spend>;
+  getSpendsByMonth: Array<Spend>;
+  getSpendsByWeek: Array<Spend>;
   hello: Scalars['String'];
   me?: Maybe<User>;
-  spend: Spend;
-  spends: Array<Spend>;
 };
 
 
-export type QuerySpendArgs = {
-  id: Scalars['Int'];
+export type QueryGetSpendsByDayArgs = {
+  orderBy: OrderBy;
+};
+
+
+export type QueryGetSpendsByMonthArgs = {
+  orderBy: OrderBy;
+};
+
+
+export type QueryGetSpendsByWeekArgs = {
+  orderBy: OrderBy;
 };
 
 export type RegisterInput = {
@@ -111,10 +124,12 @@ export type Spend = {
   user: User;
 };
 
-export type UpdateSpendInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']>;
-  id: Scalars['Int'];
+export type SpendInput = {
+  amount: Scalars['Int'];
+  categoryId: Scalars['Int'];
+  date?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type User = {
@@ -124,6 +139,13 @@ export type User = {
   spends?: Maybe<Array<Spend>>;
   username: Scalars['String'];
 };
+
+export type GetSpendsByDayQueryVariables = Exact<{
+  orderBy: OrderBy;
+}>;
+
+
+export type GetSpendsByDayQuery = { __typename?: 'Query', getSpendsByDay: Array<{ __typename?: 'Spend', id: number, name: string, description?: string | null | undefined, amount: number, date: string, category: { __typename?: 'Category', id: number, name: string } }> };
 
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -155,6 +177,25 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
 
 
+export const GetSpendsByDayDocument = gql`
+    query GetSpendsByDay($orderBy: OrderBy!) {
+  getSpendsByDay(orderBy: $orderBy) {
+    id
+    name
+    description
+    amount
+    date
+    category {
+      id
+      name
+    }
+  }
+}
+    `;
+
+export function useGetSpendsByDayQuery(options: Omit<Urql.UseQueryArgs<GetSpendsByDayQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSpendsByDayQuery>({ query: GetSpendsByDayDocument, ...options });
+};
 export const HelloDocument = gql`
     query Hello {
   hello

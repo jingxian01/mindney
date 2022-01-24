@@ -1,69 +1,30 @@
-import { Tab } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "../components/commons/Layout";
+import { TableColumns } from "../components/views/table/TableColumns";
+import { TableContents } from "../components/views/table/TableContents";
 import { ViewLayout } from "../components/views/ViewLayout";
+import { useGetSpendsByDayQuery, User } from "../generated/graphql";
 import { useAppSelector } from "../store/hook";
 
 interface TableProps {}
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const timeTabs = ["Day", "Week", "Month"];
 const orderTabs = ["Date", "Amount"];
-const tabContents = [
-  [
-    {
-      id: 1,
-      content: "day day day 1",
-    },
-    {
-      id: 2,
-      content: "day day day 2",
-    },
-    {
-      id: 3,
-      content: "day day day 3",
-    },
-  ],
-  [
-    {
-      id: 4,
-      content: "week week week 4",
-    },
-    {
-      id: 5,
-      content: "week week week 5",
-    },
-    {
-      id: 6,
-      content: "week week week 6",
-    },
-  ],
-  [
-    {
-      id: 7,
-      content: "month month month 7",
-    },
-    {
-      id: 8,
-      content: "month month month 8",
-    },
-    {
-      id: 9,
-      content: "month month month 9",
-    },
-  ],
-];
 
 export const Table: React.FC<TableProps> = ({}) => {
   const userData = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const [currentTimeTab, SetCurrentTimeTab] = useState<String>("Day");
   const [currentOrderTab, SetCurrentOrderTab] = useState<String>("Date");
-
+  const [{ data, fetching }, getSpendsByDay] = useGetSpendsByDayQuery({
+    variables: {
+      orderBy: {
+        by: "",
+        order: "",
+      },
+    },
+  });
   useEffect(() => {
     if (!userData || !userData.user) {
       navigate("/");
@@ -74,50 +35,71 @@ export const Table: React.FC<TableProps> = ({}) => {
     <Layout>
       <ViewLayout>
         <div className="space-y-4">
-          <div className="w-5/6 mx-auto py-4 rounded-lg bg-white shadow-lg">
-            <div className="w-1/2 mx-auto space-y-3">
-              <div className="flex p-1 space-x-1 bg-white rounded-xl shadow-md">
-                {timeTabs.map((tab) => (
-                  <button
-                    key={tab}
-                    className={`w-full py-2 leading-5 text-sm rounded-lg focus:outline-none
+          <div className="sm:w-1/2 mx-auto space-y-3">
+            <div className="flex p-1 space-x-1 bg-white rounded-lg shadow-md">
+              {timeTabs.map((tab) => (
+                <button
+                  key={tab}
+                  className={`w-full py-2 leading-5 text-sm rounded-md focus:outline-none
                     ${
                       currentTimeTab == tab
                         ? "text-white bg-gradient-to-r from-teal-500 to-teal-600 font-bold"
-                        : "hover:bg-teal-50 font-medium"
+                        : "hover:bg-teal-100 font-medium"
                     }
                   `}
-                    onClick={() => {
-                      SetCurrentTimeTab(tab);
-                    }}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <div className="flex p-1 space-x-1 bg-white rounded-xl shadow-md">
-                {orderTabs.map((tab) => (
-                  <button
-                    key={tab}
-                    className={`w-full py-2 leading-5 text-sm rounded-lg focus:outline-none
+                  onClick={() => {
+                    SetCurrentTimeTab(tab);
+                  }}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="flex p-1 space-x-1 bg-white rounded-lg shadow-md">
+              {orderTabs.map((tab) => (
+                <button
+                  key={tab}
+                  className={`w-full py-2 leading-5 text-sm rounded-md focus:outline-none
                   ${
                     currentOrderTab == tab
                       ? "text-white bg-gradient-to-r from-teal-500 to-teal-600 font-bold"
-                      : "hover:bg-teal-50 font-medium"
+                      : "hover:bg-teal-100 font-medium"
                   }
                 `}
-                    onClick={() => {
-                      SetCurrentOrderTab(tab);
-                    }}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
+                  onClick={() => {
+                    SetCurrentOrderTab(tab);
+                  }}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
           </div>
-          <div className="w-5/6 mx-auto py-4 rounded-lg bg-white shadow-lg">
-            test
+          <div className="mx-auto rounded-lg bg-white shadow-lg overflow-x-auto">
+            <div className="align-middle inline-block min-w-full">
+              <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <TableColumns />
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {fetching ? (
+                      <tr>
+                        <td className="px-2">loading...</td>
+                      </tr>
+                    ) : null}
+                    {data && data.getSpendsByDay && userData.user
+                      ? data.getSpendsByDay.map((spend) => (
+                          <tr key={spend.id}>
+                            <TableContents
+                              key={spend.id}
+                              spend={{ ...spend, user: userData.user as User }}
+                            />
+                          </tr>
+                        ))
+                      : null}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </ViewLayout>

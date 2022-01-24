@@ -14,9 +14,6 @@ export const TableContents: React.FC<TableContentsProps> = ({ spend }) => {
         <div className="ml-4 text-sm font-medium">{spend.name}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900 italic">$ {spend.amount}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
         <span
           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
             defaultCategories[spend.category.id - 1].bgColor
@@ -24,6 +21,9 @@ export const TableContents: React.FC<TableContentsProps> = ({ spend }) => {
         >
           {spend.category.name}
         </span>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="text-sm text-gray-900 italic">$ {spend.amount}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         {getDateFromUnix(spend.date)}

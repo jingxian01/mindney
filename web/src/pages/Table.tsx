@@ -15,16 +15,17 @@ const orderTabs = ["Date", "Amount"];
 export const Table: React.FC<TableProps> = ({}) => {
   const userData = useAppSelector((state) => state.user);
   const navigate = useNavigate();
-  const [currentTimeTab, SetCurrentTimeTab] = useState<String>("Day");
-  const [currentOrderTab, SetCurrentOrderTab] = useState<String>("Date");
+  const [currentTimeTab, SetCurrentTimeTab] = useState<string>("Day");
+  const [currentOrderTab, SetCurrentOrderTab] = useState<string>("Date");
   const [{ data, fetching }, getSpendsByDay] = useGetSpendsByDayQuery({
     variables: {
       orderBy: {
-        by: "",
+        by: `orderBy${currentOrderTab}`,
         order: "",
       },
     },
   });
+
   useEffect(() => {
     if (!userData || !userData.user) {
       navigate("/");
@@ -55,31 +56,15 @@ export const Table: React.FC<TableProps> = ({}) => {
                 </button>
               ))}
             </div>
-            <div className="flex p-1 space-x-1 bg-white rounded-lg shadow-md">
-              {orderTabs.map((tab) => (
-                <button
-                  key={tab}
-                  className={`w-full py-2 leading-5 text-sm rounded-md focus:outline-none
-                  ${
-                    currentOrderTab == tab
-                      ? "text-white bg-gradient-to-r from-teal-500 to-teal-600 font-bold"
-                      : "hover:bg-teal-100 font-medium"
-                  }
-                `}
-                  onClick={() => {
-                    SetCurrentOrderTab(tab);
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
           </div>
           <div className="mx-auto rounded-lg bg-white shadow-lg overflow-x-auto">
             <div className="align-middle inline-block min-w-full">
               <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <TableColumns />
+                  <TableColumns
+                    currentOrder={currentOrderTab}
+                    setCurrentOrder={SetCurrentOrderTab}
+                  />
                   <tbody className="bg-white divide-y divide-gray-200">
                     {fetching ? (
                       <tr>

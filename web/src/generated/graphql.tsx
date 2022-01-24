@@ -140,6 +140,11 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllCategoriesQuery = { __typename?: 'Query', getAllCategories: Array<{ __typename?: 'Category', id: number, name: string }> };
+
 export type GetSpendsByDayQueryVariables = Exact<{
   orderBy: OrderBy;
 }>;
@@ -177,6 +182,18 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
 
 
+export const GetAllCategoriesDocument = gql`
+    query GetAllCategories {
+  getAllCategories {
+    id
+    name
+  }
+}
+    `;
+
+export function useGetAllCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllCategoriesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllCategoriesQuery>({ query: GetAllCategoriesDocument, ...options });
+};
 export const GetSpendsByDayDocument = gql`
     query GetSpendsByDay($orderBy: OrderBy!) {
   getSpendsByDay(orderBy: $orderBy) {

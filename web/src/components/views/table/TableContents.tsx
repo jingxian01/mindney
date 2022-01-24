@@ -1,5 +1,6 @@
 import React from "react";
 import { Spend } from "../../../generated/graphql";
+import { defaultCategories } from "../../../utils/categories";
 import { getDateFromUnix } from "../../../utils/date";
 
 interface TableContentsProps {
@@ -16,7 +17,11 @@ export const TableContents: React.FC<TableContentsProps> = ({ spend }) => {
         <div className="text-sm text-gray-900 italic">$ {spend.amount}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+        <span
+          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+            defaultCategories[spend.category.id - 1].bgColor
+          } ${defaultCategories[spend.category.id - 1].textColor}`}
+        >
           {spend.category.name}
         </span>
       </td>

@@ -1,4 +1,5 @@
 import React from "react";
+import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 
 interface TableColumnsProps {
   currentOrderBy: string;
@@ -74,13 +75,28 @@ export const TableColumns: React.FC<TableColumnsProps> = ({
               }
             }}
           >
-            <span
-              className={`
+            <div className="inline-flex items-center space-x-1">
+              <span
+                className={`
             ${col.isClickable ? "hover:cursor-pointer hover:text-gray-900" : ""}
             `}
-            >
-              {col.name}
-            </span>
+              >
+                {col.name}
+              </span>
+              {col.isClickable && currentOrderBy === col.name ? (
+                col.name === "Amount" ? (
+                  amountIsDesc ? (
+                    <AiFillCaretDown color="red" />
+                  ) : (
+                    <AiFillCaretUp color="green" />
+                  )
+                ) : dateIsDesc ? (
+                  <AiFillCaretDown color="red" />
+                ) : (
+                  <AiFillCaretUp color="green" />
+                )
+              ) : null}
+            </div>
           </th>
         ))}
         <th scope="col" className="relative px-6 py-3">

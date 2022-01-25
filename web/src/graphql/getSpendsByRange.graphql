@@ -1,0 +1,13 @@
+query GetSpendsByRange($orderByRange: OrderByRange!) {
+  getSpendsByRange(orderByRange: $orderByRange) {
+    id
+    name
+    description
+    amount
+    date
+    category {
+      id
+      name
+    }
+  }
+}

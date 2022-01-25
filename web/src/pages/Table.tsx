@@ -4,8 +4,9 @@ import { Layout } from "../components/commons/Layout";
 import { TableColumns } from "../components/views/table/TableColumns";
 import { TableContents } from "../components/views/table/TableContents";
 import { ViewLayout } from "../components/views/ViewLayout";
-import { useGetSpendsByDayQuery, User } from "../generated/graphql";
+import { useGetSpendsByRangeQuery, User } from "../generated/graphql";
 import { useAppSelector } from "../store/hook";
+import { DateRange, getCurrentDayRange, getRange } from "../utils/date";
 
 interface TableProps {}
 
@@ -15,12 +16,15 @@ export const Table: React.FC<TableProps> = ({}) => {
   const userData = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const [currentTimeTab, SetCurrentTimeTab] = useState<string>("Day");
+  const [dateRange, setDateRange] = useState<DateRange>(getCurrentDayRange());
   const [currentOrderBy, setCurrentOrderBy] = useState<string>("Date");
   const [amountIsDesc, setAmountIsDesc] = useState<boolean>(true);
   const [dateIsDesc, setDateIsDesc] = useState<boolean>(true);
-  const [{ data, fetching }, getSpendsByDay] = useGetSpendsByDayQuery({
+
+  const [{ data, fetching }] = useGetSpendsByRangeQuery({
     variables: {
-      orderBy: {
+      orderByRange: {
+        ...dateRange,
         by: `orderBy${currentOrderBy}`,
         order:
           currentOrderBy === "Amount"
@@ -58,6 +62,8 @@ export const Table: React.FC<TableProps> = ({}) => {
                   `}
                   onClick={() => {
                     SetCurrentTimeTab(tab);
+                    const { start, end } = getRange(tab);
+                    setDateRange({ start, end });
                   }}
                 >
                   {tab}
@@ -83,8 +89,8 @@ export const Table: React.FC<TableProps> = ({}) => {
                         <td className="px-2">loading...</td>
                       </tr>
                     ) : null}
-                    {data && data.getSpendsByDay && userData.user
-                      ? data.getSpendsByDay.map((spend) => (
+                    {data && data.getSpendsByRange && userData.user
+                      ? data.getSpendsByRange.map((spend) => (
                           <tr key={spend.id}>
                             <TableContents
                               key={spend.id}

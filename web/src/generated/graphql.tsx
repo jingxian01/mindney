@@ -81,11 +81,19 @@ export type OrderBy = {
   order?: InputMaybe<Scalars['String']>;
 };
 
+export type OrderByRange = {
+  by: Scalars['String'];
+  end: Scalars['String'];
+  order?: InputMaybe<Scalars['String']>;
+  start: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getAllCategories: Array<Category>;
   getSpendsByDay: Array<Spend>;
   getSpendsByMonth: Array<Spend>;
+  getSpendsByRange: Array<Spend>;
   getSpendsByWeek: Array<Spend>;
   hello: Scalars['String'];
   me?: Maybe<User>;
@@ -99,6 +107,11 @@ export type QueryGetSpendsByDayArgs = {
 
 export type QueryGetSpendsByMonthArgs = {
   orderBy: OrderBy;
+};
+
+
+export type QueryGetSpendsByRangeArgs = {
+  orderByRange: OrderByRange;
 };
 
 
@@ -145,12 +158,12 @@ export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllCategoriesQuery = { __typename?: 'Query', getAllCategories: Array<{ __typename?: 'Category', id: number, name: string }> };
 
-export type GetSpendsByDayQueryVariables = Exact<{
-  orderBy: OrderBy;
+export type GetSpendsByRangeQueryVariables = Exact<{
+  orderByRange: OrderByRange;
 }>;
 
 
-export type GetSpendsByDayQuery = { __typename?: 'Query', getSpendsByDay: Array<{ __typename?: 'Spend', id: number, name: string, description?: string | null | undefined, amount: number, date: string, category: { __typename?: 'Category', id: number, name: string } }> };
+export type GetSpendsByRangeQuery = { __typename?: 'Query', getSpendsByRange: Array<{ __typename?: 'Spend', id: number, name: string, description?: string | null | undefined, amount: number, date: string, category: { __typename?: 'Category', id: number, name: string } }> };
 
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -194,9 +207,9 @@ export const GetAllCategoriesDocument = gql`
 export function useGetAllCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllCategoriesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetAllCategoriesQuery>({ query: GetAllCategoriesDocument, ...options });
 };
-export const GetSpendsByDayDocument = gql`
-    query GetSpendsByDay($orderBy: OrderBy!) {
-  getSpendsByDay(orderBy: $orderBy) {
+export const GetSpendsByRangeDocument = gql`
+    query GetSpendsByRange($orderByRange: OrderByRange!) {
+  getSpendsByRange(orderByRange: $orderByRange) {
     id
     name
     description
@@ -210,8 +223,8 @@ export const GetSpendsByDayDocument = gql`
 }
     `;
 
-export function useGetSpendsByDayQuery(options: Omit<Urql.UseQueryArgs<GetSpendsByDayQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<GetSpendsByDayQuery>({ query: GetSpendsByDayDocument, ...options });
+export function useGetSpendsByRangeQuery(options: Omit<Urql.UseQueryArgs<GetSpendsByRangeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetSpendsByRangeQuery>({ query: GetSpendsByRangeDocument, ...options });
 };
 export const HelloDocument = gql`
     query Hello {

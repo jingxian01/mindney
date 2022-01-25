@@ -4,8 +4,8 @@ import { Spend } from "./entities/spend.entity";
 import { UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
 import { Payload } from "src/auth/types/payload.type";
-import { OrderBy } from "./dto/order-by.input";
 import { SpendInput } from "./dto/spend.input";
+import { OrderByRange } from "./dto/order-by-range.input";
 
 @Resolver(() => Spend)
 export class SpendsResolver {
@@ -45,31 +45,11 @@ export class SpendsResolver {
 
   @Query(() => [Spend])
   @UseGuards(JwtAuthGuard)
-  getSpendsByDay(
-    @Args("orderBy") order: OrderBy,
+  getSpendsByRange(
+    @Args("orderByRange") orderByRange: OrderByRange,
     @Context() ctx: any,
   ): Promise<Array<Spend>> {
     const payload: Payload = ctx.req.user;
-    return this.spendsService.getSpendsByDay(order, payload);
-  }
-
-  @Query(() => [Spend])
-  @UseGuards(JwtAuthGuard)
-  getSpendsByWeek(
-    @Args("orderBy") order: OrderBy,
-    @Context() ctx: any,
-  ): Promise<Array<Spend>> {
-    const payload: Payload = ctx.req.user;
-    return this.spendsService.getSpendsByWeek(order, payload);
-  }
-
-  @Query(() => [Spend])
-  @UseGuards(JwtAuthGuard)
-  getSpendsByMonth(
-    @Args("orderBy") order: OrderBy,
-    @Context() ctx: any,
-  ): Promise<Array<Spend>> {
-    const payload: Payload = ctx.req.user;
-    return this.spendsService.getSpendsByMonth(order, payload);
+    return this.spendsService.getSpendsByRange(orderByRange, payload);
   }
 }

@@ -5,15 +5,9 @@ import { CategoriesService } from "../categories/categories.service";
 import { UsersService } from "../users/users.service";
 import { Between, Repository } from "typeorm";
 import { Spend } from "./entities/spend.entity";
-import {
-  getCurrentDate,
-  getCurrentDatePlusOneDay,
-  getCurrentMonth,
-  getCurrentWeek,
-} from "./utils/date";
-import { OrderBy } from "./dto/order-by.input";
 import { SpendInput } from "./dto/spend.input";
 import { User } from "src/users/entities/user.entity";
+import { OrderByRange } from "./dto/order-by-range.input";
 
 @Injectable()
 export class SpendsService {
@@ -92,47 +86,13 @@ export class SpendsService {
     });
   }
 
-  async getSpendsByDay(
-    orderBy: OrderBy,
-    { userId }: Payload,
-  ): Promise<Array<Spend>> {
+  async getSpendsByRange(orderByRange: OrderByRange, { userId }: Payload) {
     const user = await this.usersService.getUserById(userId);
     if (!user) {
       throw new Error("user not found");
     }
 
-    const start = getCurrentDate();
-    const end = getCurrentDatePlusOneDay();
-
-    return this.findSpends(start, end, user, orderBy);
-  }
-
-  async getSpendsByWeek(
-    orderBy: OrderBy,
-    { userId }: Payload,
-  ): Promise<Array<Spend>> {
-    const user = await this.usersService.getUserById(userId);
-    if (!user) {
-      throw new Error("user not found");
-    }
-
-    const { start, end } = getCurrentWeek();
-
-    return this.findSpends(start, end, user, orderBy);
-  }
-
-  async getSpendsByMonth(
-    orderBy: OrderBy,
-    { userId }: Payload,
-  ): Promise<Array<Spend>> {
-    const user = await this.usersService.getUserById(userId);
-    if (!user) {
-      throw new Error("user not found");
-    }
-
-    const { start, end } = getCurrentMonth();
-
-    return this.findSpends(start, end, user, orderBy);
+    return this.findSpends(orderByRange, user);
   }
 
   async removeSpend(spendId: number, { userId }: Payload): Promise<Boolean> {
@@ -158,20 +118,20 @@ export class SpendsService {
     return true;
   }
 
-  async findSpends(start: string, end: string, user: User, orderBy: OrderBy) {
+  async findSpends({ start, end, by, order }: OrderByRange, user: User) {
     // todos: pagination
     const spends = await this.spendRepository.find({
       where: { user, date: Between(start, end) },
       relations: ["category", "user"],
       take: 10,
       order:
-        orderBy.by === "orderByAmount"
+        by === "orderByAmount"
           ? {
-              amount: orderBy.order === "ASC" ? "ASC" : "DESC",
+              amount: order === "ASC" ? "ASC" : "DESC",
               date: "DESC",
             }
           : {
-              date: orderBy.order === "DESC" ? "DESC" : "ASC",
+              date: order === "DESC" ? "DESC" : "ASC",
             },
     });
 

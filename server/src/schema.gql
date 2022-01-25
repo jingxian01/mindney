@@ -33,16 +33,16 @@ type Mutation {
   updateSpend(spendId: Int!, spendInput: SpendInput!): Spend!
 }
 
-input OrderBy {
+input OrderByRange {
   by: String!
+  end: String!
   order: String
+  start: String!
 }
 
 type Query {
   getAllCategories: [Category!]!
-  getSpendsByDay(orderBy: OrderBy!): [Spend!]!
-  getSpendsByMonth(orderBy: OrderBy!): [Spend!]!
-  getSpendsByWeek(orderBy: OrderBy!): [Spend!]!
+  getSpendsByRange(orderByRange: OrderByRange!): [Spend!]!
   hello: String!
   me: User
 }

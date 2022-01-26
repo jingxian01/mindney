@@ -1,22 +1,17 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLogoutMutation } from "../generated/graphql";
-import { removeAccessToken } from "../utils/accessToken";
+import { InsertSpendForm } from "../../inputs/InsertSpendForm";
 
-interface SignOutModalProps {
-  signOutIsOpen: boolean;
-  setSignOutIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface InsertSpendModalProps {
+  signOutIsOpen: any;
+  setSignOutIsOpen: any;
 }
 
-export const SignOutModal: React.FC<SignOutModalProps> = ({
+export const InsertSpendModal: React.FC<InsertSpendModalProps> = ({
   signOutIsOpen,
   setSignOutIsOpen,
 }) => {
-  const [_, logout] = useLogoutMutation();
   const cancelButtonRef = useRef(null);
-  const navigate = useNavigate();
-
   return (
     <Transition.Root show={signOutIsOpen} as={Fragment}>
       <Dialog
@@ -37,12 +32,6 @@ export const SignOutModal: React.FC<SignOutModalProps> = ({
           >
             <Dialog.Overlay className="fixed inset-0 bg-gray-700 bg-opacity-75 transition-opacity" />
           </Transition.Child>
-          <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-          >
-            &#8203;
-          </span>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -52,7 +41,7 @@ export const SignOutModal: React.FC<SignOutModalProps> = ({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="inline-block align-bottom rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
@@ -60,28 +49,19 @@ export const SignOutModal: React.FC<SignOutModalProps> = ({
                       as="h3"
                       className="text-lg leading-6 font-bold text-gray-900"
                     >
-                      Sign out your account
+                      Insert new spend
                     </Dialog.Title>
-                    <div className="mt-2">
-                      <p className="text-sm">
-                        Are you sure you want to sign out your account?
-                      </p>
-                    </div>
+                    <InsertSpendForm />
                   </div>
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={() => {
-                    logout();
-                    removeAccessToken();
-                    navigate("/");
-                    setSignOutIsOpen(false);
-                  }}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-700 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={() => {}}
                 >
-                  Sign out
+                  Insert
                 </button>
                 <button
                   type="button"

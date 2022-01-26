@@ -4,7 +4,7 @@ import { BiMenu, BiX } from "react-icons/bi";
 import { FaMoneyCheck } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../store/hook";
-import { SignOutModal } from "../SignOutModal";
+import { SignOutModal } from "./modals/SignOutModal";
 
 interface NavbarProps {}
 

@@ -22,9 +22,7 @@ export const Home: React.FC<HomeProps> = ({}) => {
 
   return (
     <Layout>
-      <ViewLayout>
-        <div>intro page</div>
-      </ViewLayout>
+      <div>intro page</div>
     </Layout>
   );
 };

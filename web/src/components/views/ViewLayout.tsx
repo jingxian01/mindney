@@ -13,8 +13,8 @@ export const ViewLayout: React.FC<ViewLayoutProps> = ({ children }) => {
         {children}
       </div>
       <InsertSpendModal
-        signOutIsOpen={insertSpendIsOpen}
-        setSignOutIsOpen={setInsertSpendIsOpen}
+        insertSpendIsOpen={insertSpendIsOpen}
+        setInsertSpendIsOpen={setInsertSpendIsOpen}
       />
       <button
         className="bottom-[5%] sm:bottom-[10%] absolute right-[10%] shadow-lg shadow-teal-600 hover:shadow-gray-500 p-4 rounded-full

@@ -76,11 +76,6 @@ export type MutationUpdateSpendArgs = {
   spendInput: SpendInput;
 };
 
-export type OrderBy = {
-  by: Scalars['String'];
-  order?: InputMaybe<Scalars['String']>;
-};
-
 export type OrderByRange = {
   by: Scalars['String'];
   end: Scalars['String'];
@@ -91,32 +86,14 @@ export type OrderByRange = {
 export type Query = {
   __typename?: 'Query';
   getAllCategories: Array<Category>;
-  getSpendsByDay: Array<Spend>;
-  getSpendsByMonth: Array<Spend>;
   getSpendsByRange: Array<Spend>;
-  getSpendsByWeek: Array<Spend>;
   hello: Scalars['String'];
   me?: Maybe<User>;
 };
 
 
-export type QueryGetSpendsByDayArgs = {
-  orderBy: OrderBy;
-};
-
-
-export type QueryGetSpendsByMonthArgs = {
-  orderBy: OrderBy;
-};
-
-
 export type QueryGetSpendsByRangeArgs = {
   orderByRange: OrderByRange;
-};
-
-
-export type QueryGetSpendsByWeekArgs = {
-  orderBy: OrderBy;
 };
 
 export type RegisterInput = {
@@ -152,6 +129,13 @@ export type User = {
   spends?: Maybe<Array<Spend>>;
   username: Scalars['String'];
 };
+
+export type CreateSpendMutationVariables = Exact<{
+  spendInput: SpendInput;
+}>;
+
+
+export type CreateSpendMutation = { __typename?: 'Mutation', createSpend: { __typename?: 'Spend', id: number, name: string, description?: string | null | undefined, amount: number, date: string, category: { __typename?: 'Category', id: number, name: string } } };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -195,6 +179,25 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken?: string | null | undefined, user?: { __typename?: 'User', id: number, username: string, email: string } | null | undefined, fieldError?: { __typename?: 'FieldError', field: string, message: string } | null | undefined } };
 
 
+export const CreateSpendDocument = gql`
+    mutation CreateSpend($spendInput: SpendInput!) {
+  createSpend(spendInput: $spendInput) {
+    id
+    name
+    description
+    amount
+    category {
+      id
+      name
+    }
+    date
+  }
+}
+    `;
+
+export function useCreateSpendMutation() {
+  return Urql.useMutation<CreateSpendMutation, CreateSpendMutationVariables>(CreateSpendDocument);
+};
 export const GetAllCategoriesDocument = gql`
     query GetAllCategories {
   getAllCategories {

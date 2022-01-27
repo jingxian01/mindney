@@ -19,7 +19,7 @@ export class Spend {
   description?: string;
 
   @Field()
-  @Column({ nullable: false })
+  @Column({ type: "numeric", precision: 12, scale: 2, nullable: false })
   amount: number;
 
   @Field(() => String)

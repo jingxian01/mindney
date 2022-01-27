@@ -6,7 +6,7 @@ import { InputField } from "../components/inputs/InputField";
 import { useRegisterMutation } from "../generated/graphql";
 import { InputFieldType } from "../types/InputField.type";
 import { setAccessToken } from "../utils/accessToken";
-import { bottomErrorHandler, fieldErrorHandler } from "../utils/errorHandler";
+import { bottomErrorHandler, fieldErrorHandler } from "../utils/validation";
 
 const inputField: InputFieldType[] = [
   {
@@ -81,7 +81,7 @@ export const Register: React.FC = ({}) => {
             }
             if (response.data?.register.accessToken) {
               setAccessToken(response.data.register.accessToken);
-              navigate("/");
+              navigate("/table");
             }
           }}
         >

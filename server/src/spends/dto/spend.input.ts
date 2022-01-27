@@ -10,10 +10,10 @@ export class SpendInput {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => Int)
+  @Field()
   @Min(1, { message: "amount should greater than 0" })
   @IsNotEmpty()
-  @IsNumber(null, { message: "amount should be number" })
+  @IsNumber({}, { message: "amount should be number" })
   amount: number;
 
   @Field(() => String, { nullable: true })

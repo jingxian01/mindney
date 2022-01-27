@@ -1,7 +1,7 @@
 import { Listbox, Transition } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
-import { Category, useGetAllCategoriesQuery } from "../../generated/graphql";
+import React, { Fragment } from "react";
 import { CgSelect } from "react-icons/cg";
+import { Category, useGetAllCategoriesQuery } from "../../generated/graphql";
 
 interface CategoryInputProps {
   selectedCategory: Category;

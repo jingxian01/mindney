@@ -1,0 +1,13 @@
+mutation CreateSpend($spendInput: SpendInput!) {
+  createSpend(spendInput: $spendInput) {
+    id
+    name
+    description
+    amount
+    category {
+      id
+      name
+    }
+    date
+  }
+}

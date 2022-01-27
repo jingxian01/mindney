@@ -65,7 +65,7 @@ type Spend {
 }
 
 input SpendInput {
-  amount: Int!
+  amount: Float!
   categoryId: Int!
   date: String
   description: String

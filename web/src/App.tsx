@@ -11,7 +11,7 @@ import { useAppDispatch } from "./store/hook";
 import { RemoveUserProfile, SetUserProfile } from "./store/userReducer";
 
 function App() {
-  const [{ data }] = useMeQuery({});
+  const [{ data }] = useMeQuery({ requestPolicy: "network-only" });
   const dispatch = useAppDispatch();
 
   useEffect(() => {

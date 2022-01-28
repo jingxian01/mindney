@@ -2,8 +2,15 @@ import { makeOperation } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange, Cache, QueryInput } from "@urql/exchange-graphcache";
 import jwtDecode from "jwt-decode";
-import { createClient, dedupExchange, fetchExchange } from "urql";
 import {
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  errorExchange,
+} from "urql";
+import {
+  GetSpendsByRangeDocument,
+  GetSpendsByRangeQuery,
   LoginMutation,
   LogoutMutation,
   MeDocument,
@@ -80,8 +87,14 @@ export const client = createClient({
         // if no auth state, return operation without header
         const anyAuthState = authState as any;
         if (!anyAuthState || !anyAuthState.token) {
+          console.log("no auth");
           return operation;
         }
+
+        // testing purpose
+        console.log(anyAuthState);
+        const anyOperation = operation as any;
+        console.log(anyOperation.query.definitions[0].name.value);
 
         // check fetchOptions type
         const fetchOptions =
@@ -101,9 +114,24 @@ export const client = createClient({
           },
         });
       },
+      willAuthError: ({ authState }) => {
+        const anyAuthState = authState as any;
+        if (!anyAuthState) {
+          return true;
+        }
+
+        if (anyAuthState) {
+          // check if access token is expired
+          const { exp }: any = jwtDecode(anyAuthState.token);
+          return Date.now() >= exp * 1000;
+        }
+
+        return false;
+      },
       getAuth: async ({ authState }) => {
         if (!authState) {
           const token = getAccessToken();
+          console.log(token + " from get auth");
           if (token) {
             const { exp }: any = jwtDecode(token);
             if (Date.now() < exp * 1000) {
@@ -124,6 +152,7 @@ export const client = createClient({
         // access token has been refreshed
         const { accessToken }: any = await response.json();
         if (accessToken) {
+          console.log("get new access token and set it to local");
           setAccessToken(accessToken);
           return {
             token: accessToken,
@@ -131,23 +160,11 @@ export const client = createClient({
         }
 
         // todos: logout
+        console.log("authState (getAuth bottom): " + authState);
         localStorage.clear();
+        // console.log("auth state should be null");
 
         return null;
-      },
-      willAuthError: ({ authState }) => {
-        const anyAuthState = authState as any;
-        if (!anyAuthState) {
-          return true;
-        }
-
-        if (anyAuthState) {
-          // check if access token is expired
-          const { exp }: any = jwtDecode(anyAuthState.token);
-          return Date.now() >= exp * 1000;
-        }
-
-        return false;
       },
     }),
     fetchExchange,

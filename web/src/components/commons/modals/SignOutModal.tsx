@@ -77,6 +77,8 @@ export const SignOutModal: React.FC<SignOutModalProps> = ({
                   onClick={() => {
                     logout();
                     removeAccessToken();
+                    // todos: figure out other way to do this
+                    window.location.reload();
                     navigate("/");
                     setSignOutIsOpen(false);
                   }}

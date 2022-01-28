@@ -87,14 +87,14 @@ export const client = createClient({
         // if no auth state, return operation without header
         const anyAuthState = authState as any;
         if (!anyAuthState || !anyAuthState.token) {
-          console.log("no auth");
+          // console.log("no auth");
           return operation;
         }
 
         // testing purpose
-        console.log(anyAuthState);
-        const anyOperation = operation as any;
-        console.log(anyOperation.query.definitions[0].name.value);
+        // console.log(anyAuthState);
+        // const anyOperation = operation as any;
+        // console.log(anyOperation.query.definitions[0].name.value);
 
         // check fetchOptions type
         const fetchOptions =
@@ -131,7 +131,7 @@ export const client = createClient({
       getAuth: async ({ authState }) => {
         if (!authState) {
           const token = getAccessToken();
-          console.log(token + " from get auth");
+          // console.log(token + " from get auth");
           if (token) {
             const { exp }: any = jwtDecode(token);
             if (Date.now() < exp * 1000) {
@@ -160,7 +160,7 @@ export const client = createClient({
         }
 
         // todos: logout
-        console.log("authState (getAuth bottom): " + authState);
+        // console.log("authState (getAuth bottom): " + authState);
         localStorage.clear();
         // console.log("auth state should be null");
 

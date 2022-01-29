@@ -1,14 +1,10 @@
 import { makeOperation } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
-import { cacheExchange, Cache, QueryInput } from "@urql/exchange-graphcache";
+import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import jwtDecode from "jwt-decode";
+import { createClient, dedupExchange, fetchExchange } from "urql";
 import {
-  createClient,
-  dedupExchange,
-  fetchExchange,
-  errorExchange,
-} from "urql";
-import {
+  CreateSpendMutation,
   GetSpendsByRangeDocument,
   GetSpendsByRangeQuery,
   LoginMutation,
@@ -79,6 +75,18 @@ export const client = createClient({
               () => ({ me: null })
             );
           },
+          // createSpend: (_result, args, cache, info) => {
+          //   betterUpdateQuery<CreateSpendMutation, GetSpendsByRangeQuery>(
+          //     cache,
+          //     { query: GetSpendsByRangeDocument },
+          //     _result,
+          //     (result, query) => {
+          //       return {
+          //         getSpendsByRange: [result.createSpend],
+          //       };
+          //     }
+          //   );
+          // },
         },
       },
     }),

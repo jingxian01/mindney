@@ -37,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
 
   return (
     <div className="min-h-full">
-      <Disclosure as="nav" className="bg-teal-700">
+      <Disclosure as="nav" className="bg-gray-900">
         {({ open }) => (
           <>
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,8 +56,8 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                               key={tab.displayName}
                               className={`${
                                 currentPath == tab.to
-                                  ? "bg-teal-900"
-                                  : "hover:bg-teal-800 bg-teal-700"
+                                  ? "bg-gray-700"
+                                  : "hover:bg-gray-700"
                               } text-white  px-6 py-2 rounded-md text-md font-bold`}
                               onClick={() => navigate(tab.to)}
                             >
@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                     ) : null}
                   </div>
                 </div>
-                <Disclosure.Button className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-white  hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                <Disclosure.Button className="sm:hidden inline-flex items-center justify-center p-2 rounded-md text-white  hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   {open ? (
                     <BiX className="block h-6 w-6" aria-hidden="true" />
                   ) : (
@@ -79,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 <div className="hidden md:block">
                   {userData && userData.user ? (
                     <div className="ml-10 flex items-baseline space-x-10">
-                      <button className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
+                      <button className="hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700">
                         {userData.user.username}
                       </button>
                       <SignOutModal
@@ -87,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                         setSignOutIsOpen={setSignOutIsOpen}
                       />
                       <button
-                        className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
+                        className="hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700"
                         onClick={() => setSignOutIsOpen(true)}
                       >
                         Sign out
@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                   ) : (
                     <div className="ml-10 flex items-baseline space-x-10">
                       <button
-                        className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
+                        className="hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700"
                         onClick={() => {
                           navigate("/sign-up");
                         }}
@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                         Sign up
                       </button>
                       <button
-                        className="hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
+                        className="hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700"
                         onClick={() => {
                           navigate("/sign-in");
                         }}
@@ -120,11 +120,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               <div className="space-y-2 px-3 pt-2 pb-3">
                 {userData && userData.user ? (
                   <div className="flex space-x-3">
-                    <button className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold">
+                    <button className="w-full hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700">
                       {userData.user.username}
                     </button>
                     <button
-                      className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
+                      className="w-full hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700"
                       onClick={() => setSignOutIsOpen(true)}
                     >
                       Sign out
@@ -133,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                 ) : (
                   <>
                     <button
-                      className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
+                      className="w-full hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700"
                       onClick={() => {
                         navigate("/sign-up");
                       }}
@@ -141,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
                       Sign up
                     </button>
                     <button
-                      className="w-full hover:bg-teal-900 text-white bg-teal-800 px-6 py-2 rounded-md text-sm font-bold"
+                      className="w-full hover:bg-red-600 text-white bg-red-500 px-6 py-2 rounded-md text-sm font-bold focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700"
                       onClick={() => {
                         navigate("/sign-in");
                       }}

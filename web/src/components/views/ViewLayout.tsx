@@ -17,8 +17,8 @@ export const ViewLayout: React.FC<ViewLayoutProps> = ({ children }) => {
         setInsertSpendIsOpen={setInsertSpendIsOpen}
       />
       <button
-        className="bottom-[5%] sm:bottom-[10%] absolute right-[10%] shadow-lg shadow-teal-600 hover:shadow-gray-500 p-4 rounded-full
-        transition ease-in-out delay-150 hover:-translate-y-3 hover:scale-110 hover:bg-teal-600 text-teal-700 hover:text-white duration-300"
+        className="bottom-[5%] sm:bottom-[10%] absolute right-[10%] shadow-lg shadow-gray-700 hover:shadow-gray-500 p-4 rounded-full
+        transition ease-in-out delay-150 hover:-translate-y-2 hover:scale-110 hover:bg-red-500 text-gray-900 hover:text-white duration-300"
         onClick={() => setInsertSpendIsOpen(true)}
       >
         <BsPlusLg size={27} />

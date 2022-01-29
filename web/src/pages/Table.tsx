@@ -56,8 +56,8 @@ export const Table: React.FC<TableProps> = ({}) => {
                   className={`w-full py-2 leading-5 text-sm rounded-md focus:outline-none
                     ${
                       currentTimeTab == tab
-                        ? "text-white bg-gradient-to-r from-teal-500 to-teal-600 font-bold"
-                        : "hover:bg-teal-100 font-medium"
+                        ? "text-white bg-gradient-to-r from-red-900 to-gray-800"
+                        : "hover:bg-gray-100 font-medium"
                     }
                   `}
                   onClick={() => {
@@ -86,7 +86,7 @@ export const Table: React.FC<TableProps> = ({}) => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {fetching ? (
                       <tr>
-                        <td className="px-2">loading...</td>
+                        <td className="px-6 py-4">loading...</td>
                       </tr>
                     ) : null}
                     {data && data.getSpendsByRange && userData.user

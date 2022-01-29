@@ -27,7 +27,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = ({
             Category
           </Listbox.Label>
           <div className="relative">
-            <Listbox.Button className="relative w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left focus:outline-none focus:ring-1 focus:border-teal-600 focus:ring-teal-700 text-sm">
+            <Listbox.Button className="relative w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left focus:outline-none focus:ring-2 focus:border-white focus:ring-gray-700 text-sm">
               <span className="block truncate">{selectedCategory.name}</span>
               <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <CgSelect size={20} />
@@ -46,7 +46,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = ({
                     key={category.id}
                     className={({ active }) =>
                       `${
-                        active ? "text-white bg-teal-600" : "text-gray-900"
+                        active ? "text-white bg-red-500" : "text-gray-900"
                       } cursor-default select-none relative py-2 pl-3 pr-9`
                     }
                     value={category}

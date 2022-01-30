@@ -22,6 +22,12 @@ export type AuthResponse = {
   user?: Maybe<User>;
 };
 
+/** DATE || AMOUNT */
+export enum By {
+  Amount = 'AMOUNT',
+  Date = 'DATE'
+}
+
 export type Category = {
   __typename?: 'Category';
   id: Scalars['Float'];
@@ -76,10 +82,16 @@ export type MutationUpdateSpendArgs = {
   spendInput: SpendInput;
 };
 
+/** ASC || DESC */
+export enum Order {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export type OrderByRange = {
-  by: Scalars['String'];
+  by: By;
   end: Scalars['String'];
-  order?: InputMaybe<Scalars['String']>;
+  order: Order;
   start: Scalars['String'];
 };
 
@@ -93,6 +105,8 @@ export type Query = {
 
 
 export type QueryGetSpendsByRangeArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
   orderByRange: OrderByRange;
 };
 
@@ -115,7 +129,7 @@ export type Spend = {
 };
 
 export type SpendInput = {
-  amount: Scalars['Int'];
+  amount: Scalars['Float'];
   categoryId: Scalars['Int'];
   date?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
@@ -144,6 +158,8 @@ export type GetAllCategoriesQuery = { __typename?: 'Query', getAllCategories: Ar
 
 export type GetSpendsByRangeQueryVariables = Exact<{
   orderByRange: OrderByRange;
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -211,8 +227,8 @@ export function useGetAllCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllC
   return Urql.useQuery<GetAllCategoriesQuery>({ query: GetAllCategoriesDocument, ...options });
 };
 export const GetSpendsByRangeDocument = gql`
-    query GetSpendsByRange($orderByRange: OrderByRange!) {
-  getSpendsByRange(orderByRange: $orderByRange) {
+    query GetSpendsByRange($orderByRange: OrderByRange!, $limit: Int!, $cursor: String) {
+  getSpendsByRange(orderByRange: $orderByRange, limit: $limit, cursor: $cursor) {
     id
     name
     description

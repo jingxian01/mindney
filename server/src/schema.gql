@@ -8,6 +8,12 @@ type AuthResponse {
   user: User
 }
 
+"""DATE || AMOUNT"""
+enum By {
+  AMOUNT
+  DATE
+}
+
 type Category {
   id: Float!
   name: String!
@@ -33,16 +39,22 @@ type Mutation {
   updateSpend(spendId: Int!, spendInput: SpendInput!): Spend!
 }
 
+"""ASC || DESC"""
+enum Order {
+  ASC
+  DESC
+}
+
 input OrderByRange {
-  by: String!
+  by: By!
   end: String!
-  order: String
+  order: Order!
   start: String!
 }
 
 type Query {
   getAllCategories: [Category!]!
-  getSpendsByRange(orderByRange: OrderByRange!): [Spend!]!
+  getSpendsByRange(cursor: String, limit: Int!, orderByRange: OrderByRange!): [Spend!]!
   hello: String!
   me: User
 }

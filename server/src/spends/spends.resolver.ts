@@ -47,9 +47,16 @@ export class SpendsResolver {
   @UseGuards(JwtAuthGuard)
   getSpendsByRange(
     @Args("orderByRange") orderByRange: OrderByRange,
+    @Args("limit", { type: () => Int }) limit: number,
+    @Args("cursor", { nullable: true }) cursor: string,
     @Context() ctx: any,
   ): Promise<Array<Spend>> {
     const payload: Payload = ctx.req.user;
-    return this.spendsService.getSpendsByRange(orderByRange, payload);
+    return this.spendsService.getSpendsByRange(
+      orderByRange,
+      limit,
+      cursor,
+      payload,
+    );
   }
 }

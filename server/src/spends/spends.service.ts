@@ -7,7 +7,7 @@ import { Between, Repository } from "typeorm";
 import { Spend } from "./entities/spend.entity";
 import { SpendInput } from "./dto/spend.input";
 import { User } from "src/users/entities/user.entity";
-import { OrderByRange } from "./dto/order-by-range.input";
+import { By, OrderByRange } from "./dto/order-by-range.input";
 
 @Injectable()
 export class SpendsService {
@@ -86,13 +86,18 @@ export class SpendsService {
     });
   }
 
-  async getSpendsByRange(orderByRange: OrderByRange, { userId }: Payload) {
+  async getSpendsByRange(
+    orderByRange: OrderByRange,
+    limit: number,
+    cursor: string,
+    { userId }: Payload,
+  ): Promise<Array<Spend>> {
     const user = await this.usersService.getUserById(userId);
     if (!user) {
       throw new Error("user not found");
     }
 
-    return this.findSpends(orderByRange, user);
+    return this.findSpends(orderByRange, limit, cursor, user);
   }
 
   async removeSpend(spendId: number, { userId }: Payload): Promise<Boolean> {
@@ -118,22 +123,34 @@ export class SpendsService {
     return true;
   }
 
-  async findSpends({ start, end, by, order }: OrderByRange, user: User) {
+  async findSpends(
+    { start, end, by, order }: OrderByRange,
+    limit: number,
+    cursor: string | null,
+    user: User,
+  ): Promise<Array<Spend>> {
     // todos: pagination
-    const spends = await this.spendRepository.find({
-      where: { user, date: Between(start, end) },
-      relations: ["category", "user"],
-      take: 10,
-      order:
-        by === "orderByAmount"
-          ? {
-              amount: order === "ASC" ? "ASC" : "DESC",
-              date: "DESC",
-            }
-          : {
-              date: order === "DESC" ? "DESC" : "ASC",
-            },
-    });
+    const realLimit = Math.min(50, limit);
+    const qb = this.spendRepository
+      .createQueryBuilder("spend")
+      .leftJoinAndSelect("spend.category", "category")
+      .leftJoinAndSelect("spend.user", "user")
+      .where("spend.user.id = :id", { id: user.id }); // where user
+
+    if (cursor) {
+      qb.andWhere(
+        cursor ? `spend.${by} ${order === "DESC" ? "<" : ">"} :cursor` : "",
+        {
+          cursor:
+            by === "date" ? new Date(parseInt(cursor)) : parseFloat(cursor),
+        },
+      );
+    }
+    const spends = await qb
+      .andWhere("spend.date BETWEEN :start AND :end", { start, end })
+      .orderBy(`spend.${by}`, `${order}`)
+      .take(realLimit)
+      .getMany();
 
     return spends;
   }

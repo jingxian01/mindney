@@ -4,7 +4,12 @@ import { Layout } from "../components/commons/Layout";
 import { TableColumns } from "../components/views/table/TableColumns";
 import { TableContents } from "../components/views/table/TableContents";
 import { ViewLayout } from "../components/views/ViewLayout";
-import { useGetSpendsByRangeQuery, User } from "../generated/graphql";
+import {
+  By,
+  Order,
+  useGetSpendsByRangeQuery,
+  User,
+} from "../generated/graphql";
 import { useAppSelector } from "../store/hook";
 import { DateRange, getCurrentDayRange, getRange } from "../utils/date";
 
@@ -17,7 +22,7 @@ export const Table: React.FC<TableProps> = ({}) => {
   const navigate = useNavigate();
   const [currentTimeTab, SetCurrentTimeTab] = useState<string>("Day");
   const [dateRange, setDateRange] = useState<DateRange>(getCurrentDayRange());
-  const [currentOrderBy, setCurrentOrderBy] = useState<string>("Date");
+  const [currentOrderBy, setCurrentOrderBy] = useState<By>(By.Date);
   const [amountIsDesc, setAmountIsDesc] = useState<boolean>(true);
   const [dateIsDesc, setDateIsDesc] = useState<boolean>(true);
 
@@ -25,16 +30,18 @@ export const Table: React.FC<TableProps> = ({}) => {
     variables: {
       orderByRange: {
         ...dateRange,
-        by: `orderBy${currentOrderBy}`,
+        by: currentOrderBy,
         order:
-          currentOrderBy === "Amount"
+          currentOrderBy === By.Amount
             ? amountIsDesc
-              ? "DESC"
-              : "ASC"
+              ? Order.Desc
+              : Order.Asc
             : dateIsDesc
-            ? "DESC"
-            : "ASC",
+            ? Order.Desc
+            : Order.Asc,
       },
+      limit: 10,
+      cursor: null,
     },
   });
 

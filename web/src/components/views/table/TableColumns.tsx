@@ -1,9 +1,10 @@
 import React from "react";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { By } from "../../../generated/graphql";
 
 interface TableColumnsProps {
-  currentOrderBy: string;
-  setCurrentOrderBy: React.Dispatch<React.SetStateAction<string>>;
+  currentOrderBy: By;
+  setCurrentOrderBy: React.Dispatch<React.SetStateAction<By>>;
   amountIsDesc: boolean;
   setAmountIsDesc: React.Dispatch<React.SetStateAction<boolean>>;
   dateIsDesc: boolean;
@@ -14,7 +15,7 @@ interface TableColumnNames {
   id: number;
   name: string;
   isClickable: boolean;
-  currentOrder?: string;
+  enumType?: By;
 }
 
 const tableColNames: TableColumnNames[] = [
@@ -32,11 +33,13 @@ const tableColNames: TableColumnNames[] = [
     id: 3,
     name: "Amount",
     isClickable: true,
+    enumType: By.Amount,
   },
   {
     id: 4,
     name: "Date",
     isClickable: true,
+    enumType: By.Date,
   },
 ];
 
@@ -56,21 +59,21 @@ export const TableColumns: React.FC<TableColumnsProps> = ({
             key={col.id}
             scope="col"
             className={`px-6 py-3 text-left text-xs uppercase tracking-wider ${
-              currentOrderBy === col.name
+              currentOrderBy === col.enumType
                 ? "text-gray-900 font-bold"
                 : "text-gray-500 font-medium"
             }`}
             onClick={() => {
               // todos: think of another more efficient way to do this
-              if (col.isClickable) {
-                if (col.name === currentOrderBy) {
-                  if (col.name === "Amount") {
+              if (col.isClickable && col.enumType) {
+                if (col.enumType === currentOrderBy) {
+                  if (col.enumType === By.Amount) {
                     setAmountIsDesc(!amountIsDesc);
                   } else {
                     setDateIsDesc(!dateIsDesc);
                   }
                 } else {
-                  setCurrentOrderBy(col.name);
+                  setCurrentOrderBy(col.enumType);
                 }
               }
             }}
@@ -83,7 +86,7 @@ export const TableColumns: React.FC<TableColumnsProps> = ({
               >
                 {col.name}
               </span>
-              {col.isClickable && currentOrderBy === col.name ? (
+              {col.isClickable && currentOrderBy === col.enumType ? (
                 col.name === "Amount" ? (
                   amountIsDesc ? (
                     <AiFillCaretDown color="red" />

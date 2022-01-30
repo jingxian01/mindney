@@ -1,5 +1,13 @@
-query GetSpendsByRange($orderByRange: OrderByRange!) {
-  getSpendsByRange(orderByRange: $orderByRange) {
+query GetSpendsByRange(
+  $orderByRange: OrderByRange!
+  $limit: Int!
+  $cursor: String
+) {
+  getSpendsByRange(
+    orderByRange: $orderByRange
+    limit: $limit
+    cursor: $cursor
+  ) {
     id
     name
     description

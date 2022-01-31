@@ -54,17 +54,17 @@ export const Table: React.FC<TableProps> = ({}) => {
   return (
     <Layout>
       <ViewLayout>
-        <div className="space-y-4">
-          <div className="sm:w-1/2 mx-auto space-y-3">
-            <div className="flex p-1 space-x-1 bg-white rounded-lg shadow-md">
+        <div className="space-y-2 sm:space-y-4">
+          <div className="mx-auto space-y-3 sm:w-1/2">
+            <div className="flex space-x-1 rounded-lg bg-white p-1 shadow-md">
               {timeTabs.map((tab) => (
                 <button
                   key={tab}
-                  className={`w-full py-2 leading-5 text-sm rounded-md focus:outline-none
+                  className={`w-full rounded-md py-2 text-sm leading-5 focus:outline-none
                     ${
                       currentTimeTab == tab
-                        ? "text-white bg-gradient-to-r from-red-900 to-gray-800"
-                        : "hover:bg-gray-100 font-medium"
+                        ? "bg-gradient-to-r from-red-900 to-gray-800 text-white"
+                        : "font-medium hover:bg-gray-100"
                     }
                   `}
                   onClick={() => {
@@ -78,9 +78,9 @@ export const Table: React.FC<TableProps> = ({}) => {
               ))}
             </div>
           </div>
-          <div className="mx-auto rounded-lg bg-white shadow-lg overflow-x-auto">
-            <div className="align-middle inline-block min-w-full">
-              <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <div className="mx-auto overflow-x-auto rounded-lg bg-white shadow-lg">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
                   <TableColumns
                     currentOrderBy={currentOrderBy}
@@ -90,7 +90,7 @@ export const Table: React.FC<TableProps> = ({}) => {
                     dateIsDesc={dateIsDesc}
                     setDateIsDesc={setDateIsDesc}
                   />
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-200 bg-white">
                     {fetching ? (
                       <tr>
                         <td className="px-6 py-4">loading...</td>
@@ -110,6 +110,17 @@ export const Table: React.FC<TableProps> = ({}) => {
                 </table>
               </div>
             </div>
+          </div>
+          <div className="mx-auto sm:w-1/6">
+            {data && data.getSpendsByRange[0] ? (
+              <button className="w-full rounded-md bg-white py-2 text-sm shadow-md hover:bg-gray-200">
+                load more
+              </button>
+            ) : (
+              <div className="text-center text-sm text-gray-500">
+                -- no data --
+              </div>
+            )}
           </div>
         </div>
       </ViewLayout>

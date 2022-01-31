@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Payload } from "src/auth/types/payload.type";
+import { User } from "src/users/entities/user.entity";
+import { getDateRange } from "src/utils/date";
+import { Repository } from "typeorm";
 import { CategoriesService } from "../categories/categories.service";
 import { UsersService } from "../users/users.service";
-import { Between, Repository } from "typeorm";
-import { Spend } from "./entities/spend.entity";
+import { OrderByRange } from "./dto/order-by-range.input";
 import { SpendInput } from "./dto/spend.input";
-import { User } from "src/users/entities/user.entity";
-import { By, OrderByRange } from "./dto/order-by-range.input";
+import { Spend } from "./entities/spend.entity";
 
 @Injectable()
 export class SpendsService {
@@ -124,12 +125,13 @@ export class SpendsService {
   }
 
   async findSpends(
-    { start, end, by, order }: OrderByRange,
+    { range, by, order }: OrderByRange,
     limit: number,
     cursor: string | null,
     user: User,
   ): Promise<Array<Spend>> {
-    // todos: pagination
+    const { start, end } = getDateRange(range);
+
     const realLimit = Math.min(50, limit);
     const qb = this.spendRepository
       .createQueryBuilder("spend")
@@ -137,6 +139,7 @@ export class SpendsService {
       .leftJoinAndSelect("spend.user", "user")
       .where("spend.user.id = :id", { id: user.id }); // where user
 
+    // first query: cursor is null
     if (cursor) {
       qb.andWhere(
         cursor ? `spend.${by} ${order === "DESC" ? "<" : ">"} :cursor` : "",

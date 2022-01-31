@@ -8,9 +8,12 @@ type AuthResponse {
   user: User
 }
 
-"""DATE || AMOUNT"""
+"""field to fetch spends"""
 enum By {
+  """fetch by amount"""
   AMOUNT
+
+  """fetch by date"""
   DATE
 }
 
@@ -39,17 +42,19 @@ type Mutation {
   updateSpend(spendId: Int!, spendInput: SpendInput!): Spend!
 }
 
-"""ASC || DESC"""
+"""order to fetch spends"""
 enum Order {
+  """by ascending order"""
   ASC
+
+  """by descending order"""
   DESC
 }
 
 input OrderByRange {
   by: By!
-  end: String!
   order: Order!
-  start: String!
+  range: TimeRange!
 }
 
 type Query {
@@ -82,6 +87,18 @@ input SpendInput {
   date: String
   description: String
   name: String!
+}
+
+"""time range to fetch spends"""
+enum TimeRange {
+  """day interval"""
+  DAY
+
+  """month interval"""
+  MONTH
+
+  """week interval"""
+  WEEK
 }
 
 type User {

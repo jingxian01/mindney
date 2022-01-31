@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import { Provider as UrqlProvider } from "urql";
 import App from "./App";
-import { client } from "./client";
+import { client } from "./urql/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./store/store";

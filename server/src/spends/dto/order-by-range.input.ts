@@ -1,13 +1,25 @@
 import { Field, InputType, registerEnumType } from "@nestjs/graphql";
 
-export enum Order {
-  ASC = "ASC",
-  DESC = "DESC",
+export enum Range {
+  DAY = "DAY",
+  WEEK = "WEEK",
+  MONTH = "MONTH",
 }
 
-registerEnumType(Order, {
-  name: "Order",
-  description: "ASC || DESC",
+registerEnumType(Range, {
+  name: "TimeRange",
+  description: "time range to fetch spends",
+  valuesMap: {
+    DAY: {
+      description: "day interval",
+    },
+    WEEK: {
+      description: "week interval",
+    },
+    MONTH: {
+      description: "month interval",
+    },
+  },
 });
 
 export enum By {
@@ -17,20 +29,43 @@ export enum By {
 
 registerEnumType(By, {
   name: "By",
-  description: "DATE || AMOUNT",
+  description: "field to fetch spends",
+  valuesMap: {
+    DATE: {
+      description: "fetch by date",
+    },
+    AMOUNT: {
+      description: "fetch by amount",
+    },
+  },
+});
+
+export enum Order {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+registerEnumType(Order, {
+  name: "Order",
+  description: "order to fetch spends",
+  valuesMap: {
+    ASC: {
+      description: "by ascending order",
+    },
+    DESC: {
+      description: "by descending order",
+    },
+  },
 });
 
 @InputType()
 export class OrderByRange {
+  @Field(() => Range)
+  range: Range;
+
   @Field(() => By)
   by: By;
 
   @Field(() => Order)
   order: Order;
-
-  @Field()
-  start: string;
-
-  @Field()
-  end: string;
 }

@@ -8,12 +8,12 @@ import {
   MeQuery,
   RegisterMutation,
 } from "../generated/graphql";
+import { store } from "../store/store";
 import {
   addAuthToOperation,
   getAuth,
   willAuthError,
 } from "./authExchange.utils";
-import { cursorPagination } from "./cursorPagination";
 
 function betterUpdateQuery<Result, Query>(
   cache: Cache,
@@ -39,20 +39,12 @@ export const client = createClient({
       },
       updates: {
         Mutation: {
-          createSpend: (_result, args, cache, info) => {
-            console.log("start");
-            console.log(cache.inspectFields("Query"));
+          createSpend: (_result, _args, cache, _info) => {
+            const state = store.getState();
             cache.invalidate("Query", "getSpendsByRange", {
               limit: 10,
-              orderByRange: {
-                start: "2022-01-30",
-                end: "2022-01-31",
-                by: "DATE",
-                order: "DESC",
-              },
+              orderByRange: state.orderByRange,
             });
-            console.log(cache.inspectFields("Query"));
-            console.log("end");
           },
           register: (_result, args, cache, info) => {
             betterUpdateQuery<RegisterMutation, MeQuery>(
@@ -70,7 +62,7 @@ export const client = createClient({
               }
             );
           },
-          login: (_result, args, cache, info) => {
+          login: (_result, _args, cache, _info) => {
             betterUpdateQuery<LoginMutation, MeQuery>(
               cache,
               { query: MeDocument },
@@ -86,7 +78,7 @@ export const client = createClient({
               }
             );
           },
-          logout: (_result, args, cache, info) => {
+          logout: (_result, _args, cache, _info) => {
             betterUpdateQuery<LogoutMutation, MeQuery>(
               cache,
               { query: MeDocument },

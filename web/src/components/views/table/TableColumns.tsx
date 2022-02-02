@@ -1,21 +1,19 @@
 import React from "react";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
-import { By } from "../../../generated/graphql";
+import { By, Order } from "../../../generated/graphql";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import {
+  SET_CURRENT_BY,
+  SET_CURRENT_ORDER,
+} from "../../../store/orderByRangeReducer";
 
-interface TableColumnsProps {
-  currentOrderBy: By;
-  setCurrentOrderBy: React.Dispatch<React.SetStateAction<By>>;
-  amountIsDesc: boolean;
-  setAmountIsDesc: React.Dispatch<React.SetStateAction<boolean>>;
-  dateIsDesc: boolean;
-  setDateIsDesc: React.Dispatch<React.SetStateAction<boolean>>;
-}
+interface TableColumnsProps {}
 
 interface TableColumnNames {
   id: number;
   name: string;
   isClickable: boolean;
-  enumType?: By;
+  by?: By;
 }
 
 const tableColNames: TableColumnNames[] = [
@@ -33,24 +31,20 @@ const tableColNames: TableColumnNames[] = [
     id: 3,
     name: "Amount",
     isClickable: true,
-    enumType: By.Amount,
+    by: By.Amount,
   },
   {
     id: 4,
     name: "Date",
     isClickable: true,
-    enumType: By.Date,
+    by: By.Date,
   },
 ];
 
-export const TableColumns: React.FC<TableColumnsProps> = ({
-  currentOrderBy,
-  setCurrentOrderBy,
-  amountIsDesc,
-  setAmountIsDesc,
-  dateIsDesc,
-  setDateIsDesc,
-}) => {
+export const TableColumns: React.FC<TableColumnsProps> = ({}) => {
+  const orderByRangeData = useAppSelector((state) => state.orderByRange);
+  const dispatch = useAppDispatch();
+
   return (
     <thead className="bg-gray-50">
       <tr>
@@ -59,21 +53,29 @@ export const TableColumns: React.FC<TableColumnsProps> = ({
             key={col.id}
             scope="col"
             className={`px-6 py-3 text-left text-xs uppercase tracking-wider ${
-              currentOrderBy === col.enumType
-                ? "text-gray-900 font-bold"
-                : "text-gray-500 font-medium"
+              orderByRangeData.by === col.by
+                ? "font-bold text-gray-900"
+                : "font-medium text-gray-500"
             }`}
             onClick={() => {
               // todos: think of another more efficient way to do this
-              if (col.isClickable && col.enumType) {
-                if (col.enumType === currentOrderBy) {
-                  if (col.enumType === By.Amount) {
-                    setAmountIsDesc(!amountIsDesc);
-                  } else {
-                    setDateIsDesc(!dateIsDesc);
-                  }
+              if (col.isClickable && col.by) {
+                if (col.by === orderByRangeData.by) {
+                  dispatch({
+                    type: SET_CURRENT_ORDER,
+                    payload: {
+                      ...orderByRangeData,
+                      order:
+                        orderByRangeData.order === Order.Desc
+                          ? Order.Asc
+                          : Order.Desc,
+                    },
+                  });
                 } else {
-                  setCurrentOrderBy(col.enumType);
+                  dispatch({
+                    type: SET_CURRENT_BY,
+                    payload: { ...orderByRangeData, by: col.by },
+                  });
                 }
               }
             }}
@@ -86,14 +88,8 @@ export const TableColumns: React.FC<TableColumnsProps> = ({
               >
                 {col.name}
               </span>
-              {col.isClickable && currentOrderBy === col.enumType ? (
-                col.name === "Amount" ? (
-                  amountIsDesc ? (
-                    <AiFillCaretDown color="red" />
-                  ) : (
-                    <AiFillCaretUp color="green" />
-                  )
-                ) : dateIsDesc ? (
+              {col.isClickable && orderByRangeData.by === col.by ? (
+                orderByRangeData.order === Order.Desc ? (
                   <AiFillCaretDown color="red" />
                 ) : (
                   <AiFillCaretUp color="green" />

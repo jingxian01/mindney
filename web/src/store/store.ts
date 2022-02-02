@@ -1,8 +1,10 @@
 import { combineReducers, createStore } from "@reduxjs/toolkit";
+import { orderByRangeReducer } from "./orderByRangeReducer";
 import { userReducer } from "./userReducer";
 
 export const rootReducer = combineReducers({
   user: userReducer,
+  orderByRange: orderByRangeReducer,
 });
 
 export const store = createStore(rootReducer, {});

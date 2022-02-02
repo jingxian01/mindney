@@ -5,41 +5,40 @@ import { TableColumns } from "../components/views/table/TableColumns";
 import { TableContents } from "../components/views/table/TableContents";
 import { ViewLayout } from "../components/views/ViewLayout";
 import {
-  By,
-  Order,
+  TimeRange,
   useGetSpendsByRangeQuery,
   User,
 } from "../generated/graphql";
-import { useAppSelector } from "../store/hook";
-import { DateRange, getCurrentDayRange, getRange } from "../utils/date";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { SET_CURRENT_TIME_RANGE } from "../store/orderByRangeReducer";
 
 interface TableProps {}
 
-const timeTabs = ["Day", "Week", "Month"];
+const timeTabs = [
+  {
+    tabName: "Day",
+    range: TimeRange.Day,
+  },
+  {
+    tabName: "Week",
+    range: TimeRange.Week,
+  },
+  {
+    tabName: "Month",
+    range: TimeRange.Month,
+  },
+];
 
-export const Table: React.FC<TableProps> = ({}) => {
+export const Table: React.FC<TableProps> = () => {
   const userData = useAppSelector((state) => state.user);
   const navigate = useNavigate();
-  const [currentTimeTab, SetCurrentTimeTab] = useState<string>("Day");
-  const [dateRange, setDateRange] = useState<DateRange>(getCurrentDayRange());
-  const [currentOrderBy, setCurrentOrderBy] = useState<By>(By.Date);
-  const [amountIsDesc, setAmountIsDesc] = useState<boolean>(true);
-  const [dateIsDesc, setDateIsDesc] = useState<boolean>(true);
+  const [currentTimeTab, setCurrentTimeTab] = useState<string>("Day");
+  const orderByRangeData = useAppSelector((state) => state.orderByRange);
+  const dispatch = useAppDispatch();
 
   const [{ data, fetching }] = useGetSpendsByRangeQuery({
     variables: {
-      orderByRange: {
-        ...dateRange,
-        by: currentOrderBy,
-        order:
-          currentOrderBy === By.Amount
-            ? amountIsDesc
-              ? Order.Desc
-              : Order.Asc
-            : dateIsDesc
-            ? Order.Desc
-            : Order.Asc,
-      },
+      orderByRange: orderByRangeData,
       limit: 10,
       cursor: null,
     },
@@ -57,23 +56,28 @@ export const Table: React.FC<TableProps> = ({}) => {
         <div className="space-y-2 sm:space-y-4">
           <div className="mx-auto space-y-3 sm:w-1/2">
             <div className="flex space-x-1 rounded-lg bg-white p-1 shadow-md">
-              {timeTabs.map((tab) => (
+              {timeTabs.map((t) => (
                 <button
-                  key={tab}
+                  key={t.tabName}
                   className={`w-full rounded-md py-2 text-sm leading-5 focus:outline-none
                     ${
-                      currentTimeTab == tab
+                      currentTimeTab === t.tabName
                         ? "bg-gradient-to-r from-red-900 to-gray-800 text-white"
                         : "font-medium hover:bg-gray-100"
                     }
                   `}
                   onClick={() => {
-                    SetCurrentTimeTab(tab);
-                    const { start, end } = getRange(tab);
-                    setDateRange({ start, end });
+                    setCurrentTimeTab(t.tabName);
+                    dispatch({
+                      type: SET_CURRENT_TIME_RANGE,
+                      payload: {
+                        ...orderByRangeData,
+                        range: t.range,
+                      },
+                    });
                   }}
                 >
-                  {tab}
+                  {t.tabName}
                 </button>
               ))}
             </div>
@@ -82,14 +86,7 @@ export const Table: React.FC<TableProps> = ({}) => {
             <div className="inline-block min-w-full align-middle">
               <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <TableColumns
-                    currentOrderBy={currentOrderBy}
-                    setCurrentOrderBy={setCurrentOrderBy}
-                    amountIsDesc={amountIsDesc}
-                    setAmountIsDesc={setAmountIsDesc}
-                    dateIsDesc={dateIsDesc}
-                    setDateIsDesc={setDateIsDesc}
-                  />
+                  <TableColumns />
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {fetching ? (
                       <tr>

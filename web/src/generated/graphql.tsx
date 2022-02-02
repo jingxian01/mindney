@@ -22,9 +22,11 @@ export type AuthResponse = {
   user?: Maybe<User>;
 };
 
-/** DATE || AMOUNT */
+/** field to fetch spends */
 export enum By {
+  /** fetch by amount */
   Amount = 'AMOUNT',
+  /** fetch by date */
   Date = 'DATE'
 }
 
@@ -82,17 +84,18 @@ export type MutationUpdateSpendArgs = {
   spendInput: SpendInput;
 };
 
-/** ASC || DESC */
+/** order to fetch spends */
 export enum Order {
+  /** by ascending order */
   Asc = 'ASC',
+  /** by descending order */
   Desc = 'DESC'
 }
 
 export type OrderByRange = {
   by: By;
-  end: Scalars['String'];
   order: Order;
-  start: Scalars['String'];
+  range: TimeRange;
 };
 
 export type Query = {
@@ -136,6 +139,16 @@ export type SpendInput = {
   name: Scalars['String'];
 };
 
+/** time range to fetch spends */
+export enum TimeRange {
+  /** day interval */
+  Day = 'DAY',
+  /** month interval */
+  Month = 'MONTH',
+  /** week interval */
+  Week = 'WEEK'
+}
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
@@ -157,9 +170,9 @@ export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetAllCategoriesQuery = { __typename?: 'Query', getAllCategories: Array<{ __typename?: 'Category', id: number, name: string }> };
 
 export type GetSpendsByRangeQueryVariables = Exact<{
-  orderByRange: OrderByRange;
-  limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  orderByRange: OrderByRange;
 }>;
 
 
@@ -227,8 +240,8 @@ export function useGetAllCategoriesQuery(options: Omit<Urql.UseQueryArgs<GetAllC
   return Urql.useQuery<GetAllCategoriesQuery>({ query: GetAllCategoriesDocument, ...options });
 };
 export const GetSpendsByRangeDocument = gql`
-    query GetSpendsByRange($orderByRange: OrderByRange!, $limit: Int!, $cursor: String) {
-  getSpendsByRange(orderByRange: $orderByRange, limit: $limit, cursor: $cursor) {
+    query GetSpendsByRange($cursor: String, $limit: Int!, $orderByRange: OrderByRange!) {
+  getSpendsByRange(cursor: $cursor, limit: $limit, orderByRange: $orderByRange) {
     id
     name
     description
